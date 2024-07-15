@@ -11,7 +11,7 @@ library('grid')
 
 getwd()
 
-rawlit <- read.csv("Data/LitData.csv")
+rawlit <- read.csv("1. Data/LitData.csv")
 
 head(rawlit);dim(rawlit)
 str(rawlit)
