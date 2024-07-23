@@ -13,7 +13,7 @@ getwd()
 
 rawlit <- read.csv("1. Data/LitData.csv")
 
-head(rawlit);dim(rawlit)
+head(rawlit,3);dim(rawlit)
 str(rawlit)
 rawlit[rawlit == ""] <- NA
 
@@ -395,9 +395,9 @@ for (i in replace5){
   rawlit$Primary_Enviro_Variable <- sub(i,"Vegetation Variables",rawlit$Primary_Enviro_Variable)
   rawlit$Secondary_Enviro_Variable <- sub(i,"Vegetation Variables",rawlit$Secondary_Enviro_Variable)
 }
-
+head(rawlit,3);dim(rawlit)
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
-par(mar=c(7,4,1,1))
+par(mar=c(8,4,1,1))
 barplot(table(rawlit$Spatial_Scale)[order(table(rawlit$Spatial_Scale),decreasing = T)],las = 2, axis.lty = 1,names.arg = c('No Environmental \n Variables','Site','Landscape','Both'))
 mtext(text = "Number of Articles",side = 2,line = 2.5)
 
@@ -405,7 +405,7 @@ dev.new(height=7,width=10,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(10,4,1,1))
 barplot(table(c(rawlit$Primary_Enviro_Variable,rawlit$Secondary_Enviro_Variable))[order(table(c(rawlit$Primary_Enviro_Variable,rawlit$Secondary_Enviro_Variable)),decreasing = T)],las = 2, axis.lty = 1,names.arg = c('Vegetation Variables', '% Habitat',"Flower Variables",'Landscape Complexity',"% Farming",'Soil Properties','Distance to Habitat','Tree Variables','Water Properties','Patches of Habitat','Habitat Connectivity','Elevation','% Bare Ground','Canopy Cover','Edge Density','Habitat Heterogeneity','Habitat Quality','Landscape Intensity','Leaf Litter Depth','% Artifical Surfaces','Time Since Fire','Weed Richness'))
 mtext(text = "Number of Articles",side = 2,line = 2.5)
-
+head(rawlit,3);dim(rawlit)
 
 #Graphing together
 
@@ -414,7 +414,7 @@ layout(mat = matrix(c(1,2,2,3,
                       4,4,4,4),nrow = 2,byrow = T), heights = c(1,2))
 
 plot.new()
-par(mar=c(4,4,1,1))
+par(mar=c(6,4,1,1))
 barplot(table(rawlit$Spatial_Scale)[order(table(rawlit$Spatial_Scale),decreasing = T)],las = 2, axis.lty = 1,names.arg = c('No Environmental \n Variables','Site','Landscape','Both'))
 mtext(text = "Number of Articles",
       side = 2,line = 2.5,cex = 0.7)
