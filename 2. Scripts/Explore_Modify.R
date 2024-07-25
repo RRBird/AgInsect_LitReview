@@ -396,6 +396,7 @@ for (i in replace5){
   rawlit$Secondary_Enviro_Variable <- sub(i,"Vegetation Variables",rawlit$Secondary_Enviro_Variable)
 }
 head(rawlit,3);dim(rawlit)
+
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8,4,1,1))
 barplot(table(rawlit$Spatial_Scale)[order(table(rawlit$Spatial_Scale),decreasing = T)],las = 2, axis.lty = 1,names.arg = c('No Environmental \n Variables','Site','Landscape','Both'))
