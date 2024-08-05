@@ -29,8 +29,6 @@ head(geo,3);dim(geo)
 Con_Chi<- table(geo$Continent)
 Con_Chi<- Con_Chi[-which(names(Con_Chi)=='Multiple')]
 
-table(geo$Continent)[-which(names(table(geo$Continent))=='Multiple')]
-
 chisq.test(Con_Chi,p = rep(1/length(Con_Chi), length(Con_Chi)))
 #Reject Null - Number of studies are different in different continent 
 
@@ -62,6 +60,10 @@ axis(side=1,at=1:10,las = 2,labels = c("Temperate Forest", "Tropical/Subtropical
 mtext(as.expression(bquote(chi^2~"= 502.82")),adj = 1,at = 7.5,line = -5)
 mtext(text = 'df = 7',adj = 1,at = 6.55,line = -5.8)
 mtext(text = 'p < 0.05',adj = 1,at = 7.1,line = -6.6)
+mtext(text = '*',adj = 1,at = 10.25,line = -16.5,cex = 1.5)
+mtext(text = '*',adj = 1,at = 9.25,line = -16.3,cex = 1.5)
+
+
 
 #Question #: Spatial----
 
@@ -99,7 +101,6 @@ head(ManLitData3);dim(ManLitData3)
 
 ManLitData <- rbind(ManLitData1,ManLitData2,ManLitData3)
 head(ManLitData);dim(ManLitData)
-
 
 
 #Function found online not written by me  https://www.r-bloggers.com/2013/01/randomly-deleting-duplicate-rows-from-a-dataframe/
@@ -147,7 +148,6 @@ Man_Chi1<- table(Man_Chi$Management)
 chisq.test(Man_Chi1,p = rep(1/length(Man_Chi1), length(Man_Chi1)))
 #Reject Null - i.e the number of studies which use different management types is different 
 
-#Should plot be of the shortened data or the full data?
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8.5,4,1,1))
@@ -171,6 +171,9 @@ head(FarmLitData2);dim(FarmLitData2)
 FarmLitData <- rbind(FarmLitData1,FarmLitData2)
 head(FarmLitData);dim(FarmLitData)
 
+FarmLitData$Type <- sub('Silvoarable','Silvo',FarmLitData$Type)
+FarmLitData$Type <- sub('Silvopastoral','Silvo',FarmLitData$Type)
+table(FarmLitData$Type)
 
 FarmLitData$Selected <- duplicated.random(FarmLitData$Article_Number)
 head(FarmLitData);dim(FarmLitData)
@@ -187,8 +190,6 @@ Farm_Chi1<- table(Farm_Chi$Type)
 #remove categories with less than 5
 
 Farm_Chi1<- Farm_Chi1[-which(names(Farm_Chi1)=='Aquaculture')]
-Farm_Chi1<- Farm_Chi1[-which(names(Farm_Chi1)=='Silvoarable')]
-Farm_Chi1<- Farm_Chi1[-which(names(Farm_Chi1)=='Silvopastoral')]
 Farm_Chi1<- Farm_Chi1[-which(names(Farm_Chi1)=='Various')]
 
 
@@ -198,10 +199,13 @@ chisq.test(Farm_Chi1,p = rep(1/length(Farm_Chi1), length(Farm_Chi1)))
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8.5,4,1,1))
 plot(table(FarmLitData$Type)[order(table(FarmLitData$Type),decreasing = T)], ylim = c(0,170),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
-axis(side=1,at=1:10,las = 2,labels = c('Crops','Ground Fruit \n & Vegetables','Orchid','Livestock','Agroforestry','Unspecified','Silvoarable','Silvopastoral','Various','Aquaculture'))
-mtext(as.expression(bquote(chi^2~"= 206.9")),adj = 1,at = 7.6,line = -5)
-mtext(text = 'df = 5',adj = 1,at = 6.9,line = -5.8)
-mtext(text = 'p < 0.05',adj = 1,at = 7.4,line = -6.6)
+axis(side=1,at=1:9,las = 2,labels = c('Crops','Ground Fruit \n & Vegetables','Orchid','Livestock','Agroforestry','Unspecified','Silvoarable/\nSilvopastural','Various','Aquaculture'))
+mtext(as.expression(bquote(chi^2~"= 268.13")),adj = 1,at = 7.57,line = -5)
+mtext(text = 'df = 6',adj = 1,at = 6.7,line = -5.8)
+mtext(text = 'p < 0.05',adj = 1,at = 7.2,line = -6.6)
+mtext(text = '*',adj = 1,at = 9.25,line = -16.9,cex = 1.5)
+mtext(text = '*',adj = 1,at = 8.25,line = -16.9,cex = 1.5)
+
 
 #Question #: Insect Focus ----
 
@@ -247,6 +251,7 @@ axis(side=1,at=1:10,las = 2,labels = c('Pollination',"Biologicol Control","Biodi
 mtext(as.expression(bquote(chi^2~"= 285.8")),adj = 1,at = 7.65,line = -5)
 mtext(text = 'df = 8',adj = 1,at = 6.9,line = -5.8)
 mtext(text = 'p < 0.05',adj = 1,at = 7.4,line = -6.6)
+mtext(text = '*',adj = 1,at = 10.25,line = -16.9,cex = 1.5)
 
 
 ##Taxon----
@@ -283,19 +288,21 @@ length(unique(Tax_Chi$Article_Number))
 Tax_Chi1<- table(Tax_Chi$Taxon)
 #remove categories with less than 5
 
-ES_Chi1<- ES_Chi1[-which(names(ES_Chi1)=='Various')]
+Tax_Chi1[order(Tax_Chi1,decreasing = T)]
+
+#ES_Chi1<- ES_Chi1[-which(names(ES_Chi1)=='NAME')]
 
 
-chisq.test(ES_Chi1,p = rep(1/length(ES_Chi1), length(ES_Chi1)))
+#chisq.test(ES_Chi1,p = rep(1/length(ES_Chi1), length(ES_Chi1)))
 
 
-dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
-par(mar=c(8.5,4,1,1))
-plot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,150),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
-axis(side=1,at=1:10,las = 2,labels = c('Pollination',"Biologicol Control","Biodiversity/\nResilience","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem \nEngineer","Food Source", "Various"))
-mtext(as.expression(bquote(chi^2~"= 285.8")),adj = 1,at = 7.65,line = -5)
-mtext(text = 'df = 8',adj = 1,at = 6.9,line = -5.8)
-mtext(text = 'p < 0.05',adj = 1,at = 7.4,line = -6.6)
+#dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
+#par(mar=c(8.5,4,1,1))
+#plot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,150),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
+#axis(side=1,at=1:10,las = 2,labels = c('Pollination',"Biologicol Control","Biodiversity/\nResilience","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem \nEngineer","Food Source", "Various"))
+#mtext(as.expression(bquote(chi^2~"= 285.8")),adj = 1,at = 7.65,line = -5)
+#mtext(text = 'df = 8',adj = 1,at = 6.9,line = -5.8)
+#mtext(text = 'p < 0.05',adj = 1,at = 7.4,line = -6.6)
 
 #Question #: Functional Groups----
 
@@ -308,12 +315,12 @@ Fun_Chi<- table(Litdata$Functional_Groups)
 chisq.test(Fun_Chi,p = rep(1/length(Fun_Chi), length(Fun_Chi)))
 #Reject Null - i.e the number of studies which use spatial scales is different 
 
-dev.new(height=7,width=6,dpi=80,pointsize=14,noRStudioGD = T)
+dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(7,4,1,1))
 plot(c(NA, table(Litdata$Functional_Groups),NA), ylim = c(0,250),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n",xlab = NA,bty = 'n')
 axis(side=1,at = 1:4,las = 2,labels = c(NA,'Functional\n Groups \nNot Included','Functional\n Groups \nIncluded',NA))
-mtext(as.expression(bquote(chi^2~"= 46.282")),adj = 1,at = 3.44,line = -5)
-mtext(text = 'df = 1',adj = 1,at = 3.05,line = -5.8)
-mtext(text = 'p < 0.05',adj = 1,at = 3.26,line = -6.6)
+mtext(as.expression(bquote(chi^2~"= 46.282")),adj = 1,at = 3.43,line = -5)
+mtext(text = 'df = 1',adj = 1,at = 3.1,line = -5.8)
+mtext(text = 'p < 0.05',adj = 1,at = 3.27,line = -6.6)
 
 ##TO DO - Table of Fun Groups ----
