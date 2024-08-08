@@ -275,3 +275,37 @@ table(ESLitData$ES)
 
 
 #Both Preds from the no random effect 
+
+#Old Chi plots---
+
+
+plot(table(Litdata$Spatial_Scale)[order(table(Litdata$Spatial_Scale),decreasing = T)], ylim = c(0,150),xlim=c(0.5,4.5),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
+box(bty='l')
+axis(side=1,at=1:4,las = 2,labels = c('No Environmental \n Variables','Site','Landscape','Both'))
+mtext(as.expression(bquote(chi^2~"= 27.33")),adj = 1,at = 3.4,line = -5)
+mtext(text = 'df = 3',adj = 1,at = 3.1,line = -5.8)
+mtext(text = 'p < 0.05',adj = 1,at = 3.26,line = -6.6)
+
+
+
+
+#Question #: Functional Groups----
+
+
+##Included Functional Groups----
+
+
+Fun_Chi<- table(Litdata$Functional_Groups)
+
+chisq.test(Fun_Chi,p = rep(1/length(Fun_Chi), length(Fun_Chi)))
+#Reject Null - i.e the number of studies which use spatial scales is different 
+
+dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
+par(mar=c(7,4,1,1))
+plot(c(NA, table(Litdata$Functional_Groups),NA), ylim = c(0,250),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n",xlab = NA,bty = 'n')
+axis(side=1,at = 1:4,las = 2,labels = c(NA,'Functional\n Groups \nNot Included','Functional\n Groups \nIncluded',NA))
+mtext(as.expression(bquote(chi^2~"= 46.282")),adj = 1,at = 3.43,line = -5)
+mtext(text = 'df = 1',adj = 1,at = 3.1,line = -5.8)
+mtext(text = 'p < 0.05',adj = 1,at = 3.27,line = -6.6)
+
+##TO DO - Table of Fun Groups ----

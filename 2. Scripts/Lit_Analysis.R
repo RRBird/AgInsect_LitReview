@@ -1,8 +1,6 @@
 
 library('dplyr')
-library("arm")
-library("AICcmodavg")
-library("lme4")
+library("rworldmap")
 
 #Analysis for Lit review
 
@@ -30,39 +28,52 @@ Con_Chi<- table(geo$Continent)
 Con_Chi<- Con_Chi[-which(names(Con_Chi)=='Multiple')]
 
 chisq.test(Con_Chi,p = rep(1/length(Con_Chi), length(Con_Chi)))
-#Reject Null - Number of studies are different in different continent 
+#Reject Null - Number of studies are different in different continent
 
-dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
-par(mar=c(5.5,4,1,1))
-plot(Con_Chi, las=2,ylab = "Number of Articles",type = "p",cex = 2.5,xaxt="n",pch = 19,ylim = c(0,200))
-axis(side=1,at=1:6,labels=c("Europe", "Asia","North \nAmerica","South \nAmerica","Africa","Oceania"),las = 2)
-mtext(as.expression(bquote(chi^2~"= 194.72")),adj = 1,at = 4.6,line = -5)
-mtext(text = 'df = 5',adj = 1,at = 4.08,line = -5.8)
-mtext(text = 'p < 0.05',adj = 1,at = 4.4,line = -6.6)
+Conplot<-data.frame(Continent = unique(geo$Continent[order(geo$Continent)]), Articles = as.numeric(Con_Chi), Lat = c(54.919722,46.587472,50.301389,-19.624639,1.600889,-38.414056), Long = c(18.305611,94.334389,-109.222306,-58.773083,23.844111,160.639861))
 
 ##TO DO - Table of Countries ----
 
 ##Biome----
 
-Bio_Chi<- table(Litdata$Biome)
-#to use in chi must have a count of at least 5 - remove various and unspecified for analysis
-Bio_Chi<- Bio_Chi[-which(names(Bio_Chi)=='Unspecified')]
-Bio_Chi<- Bio_Chi[-which(names(Bio_Chi)=='Various')]
+table(Litdata$Biome)
+#to use in chi must have a count of at least 5 - add together those which have less then 5 (various and unspecified) into other
+Biome<-Litdata
+Biome$Biome<-sub('Unspecified',"Other",Biome$Biome)
+Biome$Biome<-sub('Various',"Other",Biome$Biome)
+
+Bio_Chi<- table(Biome$Biome)
 
 chisq.test(Bio_Chi,p = rep(1/length(Bio_Chi), length(Bio_Chi)))
 #Reject Null - Number of studies are different in different Biomes 
 
+##Figure----
 
-dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
-par(mar=c(9,4,1,1))
-plot(table(Litdata$Biome), ylim = c(0,200),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
-axis(side=1,at=1:10,las = 2,labels = c("Temperate Forest", "Tropical/Subtropical \nForest","Tropical/Subtropical \nGrassland","Mediterrane","Temperate\n Grasslands","Boreal","Desert",'Montane','Various','Unspecified'))
-mtext(as.expression(bquote(chi^2~"= 502.82")),adj = 1,at = 7.5,line = -5)
-mtext(text = 'df = 7',adj = 1,at = 6.55,line = -5.8)
-mtext(text = 'p < 0.05',adj = 1,at = 7.1,line = -6.6)
-mtext(text = '*',adj = 1,at = 10.25,line = -16.5,cex = 1.5)
-mtext(text = '*',adj = 1,at = 9.25,line = -16.3,cex = 1.5)
+dev.new(height=14,width=14,dpi=80,pointsize=14,noRStudioGD = T)
+layout(mat = matrix(c(1,1,1,1,
+                      2,3,3,4),nrow = 2,byrow = T),heights = 1,1)
+par(mar=c(0,0,0,0))
+plot(countriesCoarseLessIslands,ylim = c(20,20),col = 'lightgrey')
+points(Conplot$Long,Conplot$Lat,pch = 20, cex = c(Conplot$Articles/7),col = 'black')
+text(Conplot$Long,Conplot$Lat,labels = Conplot$Articles,col = 'white',cex = c(Conplot$Articles/35))
+mtext(text = 'df = 5',adj = 1,at = 170,line = -1.8)
+mtext(as.expression(bquote(chi^2~"= 194.72")),adj = 1,at = 170,line = -3.2)
+mtext(text = 'p < 0.001',adj = 1,at = 170,line = -4)
+mtext(text = 'a)',adj = 1, at = -170, line = -2)
+mtext(text = "*20",adj = 1, at = 168, line = -18.3,cex = 0.9)
 
+plot.new()
+
+par(mar=c(11,4,1,1))
+barplot(Bio_Chi[order(Bio_Chi,decreasing = T)],ylim = c(0,200),las = 2,cex.axis = 1.3,names.arg = c("Temperate Forest", "Tropical Forest","Tropical Grassland","Mediterrane","Temperate Grassland","Boreal","Desert",'Montane','Other'),cex.names=1.2)
+box(bty = 'l')
+mtext(text = "Articles",side = 2, line = 3.2, cex =1)
+mtext(text = 'df = 8',adj = 1,at = 11,line = -1,cex = 1)
+mtext(as.expression(bquote(chi^2~"= 591.41")),adj = 1,at = 11,line = -2.3,cex = 1)
+mtext(text = 'p < 0.001',adj = 1,at = 11,line = -3.1,cex = 1)
+mtext(text = 'b)',adj = 1, at = -4, line = 0)
+
+plot.new()
 
 
 #Question #: Spatial----
@@ -76,12 +87,13 @@ chisq.test(Spat_Chi,p = rep(1/length(Spat_Chi), length(Spat_Chi)))
 
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
-par(mar=c(8,4,1,1))
-plot(table(Litdata$Spatial_Scale)[order(table(Litdata$Spatial_Scale),decreasing = T)], ylim = c(0,150),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
-axis(side=1,at=1:4,las = 2,labels = c('No Environmental \n Variables','Site','Landscape','Both'))
-mtext(as.expression(bquote(chi^2~"= 27.333")),adj = 1,at = 3.4,line = -5)
-mtext(text = 'df = 3',adj = 1,at = 3.1,line = -5.8)
-mtext(text = 'p < 0.05',adj = 1,at = 3.26,line = -6.6)
+par(mar=c(9,4,1,1))
+barplot(table(Litdata$Spatial_Scale)[order(table(Litdata$Spatial_Scale),decreasing = T)],names.arg = c('No Environmental \n Variables','Site','Landscape','Both'),las = 2,cex.axis = 1.2,cex.names = 1.1,)
+box(bty='l')
+mtext(text = "Articles",side = 2, line = 2.8, cex =1.2)
+mtext(text = 'df = 3',adj = 1,at = 4.8,line = -1,cex = 1.1)
+mtext(as.expression(bquote(chi^2~"= 27.33")),adj = 1,at = 4.8,line = -2,cex = 1.1)
+mtext(text = 'p < 0.001',adj = 1,at = 4.8,line = -2.7,cex = 1.1)
 
 ##TO DO - Table of Environmental variables ----
 
@@ -151,10 +163,11 @@ chisq.test(Man_Chi1,p = rep(1/length(Man_Chi1), length(Man_Chi1)))
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8.5,4,1,1))
-plot(table(ManLitData$Management), ylim = c(0,150),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
+barplot(table(ManLitData$Management), ylim = c(0,150),ylab = "Number of Articles",xaxt="n")
+box(bty='l')
 axis(side=1,at=1:12,las = 2,labels = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively \nManaged","Other","IPM","Low Input","Ag Enviro Scheme","Environmental","Commercial","Gradient Inputs"))
-mtext(as.expression(bquote(chi^2~"= 559.08")),adj = 1,at = 7.9,line = -5)
 mtext(text = 'df = 11',adj = 1,at = 7.0,line = -5.8)
+mtext(as.expression(bquote(chi^2~"= 559.08")),adj = 1,at = 7.9,line = -5)
 mtext(text = 'p < 0.05',adj = 1,at = 7.4,line = -6.6)
 
 ##Farm Type----
@@ -171,8 +184,11 @@ head(FarmLitData2);dim(FarmLitData2)
 FarmLitData <- rbind(FarmLitData1,FarmLitData2)
 head(FarmLitData);dim(FarmLitData)
 
-FarmLitData$Type <- sub('Silvoarable','Silvo',FarmLitData$Type)
-FarmLitData$Type <- sub('Silvopastoral','Silvo',FarmLitData$Type)
+FarmLitData$Type <- sub('Silvoarable','Other',FarmLitData$Type)
+FarmLitData$Type <- sub('Silvopastoral','Other',FarmLitData$Type)
+FarmLitData$Type <- sub('Aquaculture','Other',FarmLitData$Type)
+FarmLitData$Type <- sub('Various','Other',FarmLitData$Type)
+
 table(FarmLitData$Type)
 
 FarmLitData$Selected <- duplicated.random(FarmLitData$Article_Number)
@@ -189,22 +205,40 @@ length(unique(Farm_Chi$Article_Number))
 Farm_Chi1<- table(Farm_Chi$Type)
 #remove categories with less than 5
 
-Farm_Chi1<- Farm_Chi1[-which(names(Farm_Chi1)=='Aquaculture')]
-Farm_Chi1<- Farm_Chi1[-which(names(Farm_Chi1)=='Various')]
-
-
 chisq.test(Farm_Chi1,p = rep(1/length(Farm_Chi1), length(Farm_Chi1)))
 
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8.5,4,1,1))
 plot(table(FarmLitData$Type)[order(table(FarmLitData$Type),decreasing = T)], ylim = c(0,170),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
-axis(side=1,at=1:9,las = 2,labels = c('Crops','Ground Fruit \n & Vegetables','Orchid','Livestock','Agroforestry','Unspecified','Silvoarable/\nSilvopastural','Various','Aquaculture'))
+axis(side=1,at=1:9,las = 2,labels = c('Crops','Ground Fruit \n & Vegetables','Orchard','Livestock','Agroforestry','Unspecified','Silvoarable/\nSilvopastural','Various','Aquaculture'))
 mtext(as.expression(bquote(chi^2~"= 268.13")),adj = 1,at = 7.57,line = -5)
 mtext(text = 'df = 6',adj = 1,at = 6.7,line = -5.8)
 mtext(text = 'p < 0.05',adj = 1,at = 7.2,line = -6.6)
 mtext(text = '*',adj = 1,at = 9.25,line = -16.9,cex = 1.5)
 mtext(text = '*',adj = 1,at = 8.25,line = -16.9,cex = 1.5)
+
+#Figure
+
+dev.new(height=7,width=14,dpi=80,pointsize=14,noRStudioGD = T)
+par(mar=c(9,4,1,1),mfrow = c(1,2))
+barplot(table(ManLitData$Management), ylim = c(0,140),las = 2, names.arg = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively Managed","Other","IPM","Low Input","Ag Enviro Scheme","Environmental","Commercial","Gradient Inputs"))
+box(bty='l')
+mtext(text = "Articles",side = 2, line = 2.8, cex =1.2)
+mtext(text = 'df = 11',adj = 1,at = 15.0,line = -1)
+mtext(as.expression(bquote(chi^2~"= 559.08")),adj = 1,at = 15,line = -2)
+mtext(text = 'p < 0.001',adj = 1,at = 15,line = -2.6)
+mtext(text = 'a)',adj = 1,at = -2.5,line = 0,cex = 1.1)
+
+
+par(mar=c(9,4,1,1))
+barplot(table(FarmLitData$Type)[order(table(FarmLitData$Type),decreasing = T)],las = 2, ylim = c(0,170), names.arg = c('Crops','Ground Fruit \n & Vegetables','Orchard','Livestock','Agroforestry','Unspecified','Other') )
+box(bty = 'l')
+mtext(text = "Articles",side = 2, line = 2.8, cex =1.2)
+mtext(text = 'df = 6',adj = 1,at = 8.5,line = -1)
+mtext(as.expression(bquote(chi^2~"= 267.38")),adj = 1,at = 8.5,line = -2)
+mtext(text = 'p < 0.001',adj = 1,at = 8.5,line = -2.6)
+mtext(text = 'b)',adj = 1,at = -1.3,line = 0,cex = 1.1)
 
 
 #Question #: Insect Focus ----
@@ -235,10 +269,14 @@ ES_Chi <- ESLitData[which(ESLitData$Selected == "FALSE"),]
 
 length(unique(ES_Chi$Article_Number)) 
 
-ES_Chi1<- table(ES_Chi$ES)
-#remove categories with less than 5
+table(ESLitData$ES)
+#categories with less than 5 added together
 
-ES_Chi1<- ES_Chi1[-which(names(ES_Chi1)=='Various')]
+ESLitData$ES <- sub('Food_Source','Other',ESLitData$ES)
+ESLitData$ES <- sub('Various','Other',ESLitData$ES)
+
+ES_Chi1<- table(ES_Chi$ES)
+
 
 
 chisq.test(ES_Chi1,p = rep(1/length(ES_Chi1), length(ES_Chi1)))
@@ -247,17 +285,15 @@ chisq.test(ES_Chi1,p = rep(1/length(ES_Chi1), length(ES_Chi1)))
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8.5,4,1,1))
 plot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,150),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
-axis(side=1,at=1:10,las = 2,labels = c('Pollination',"Biologicol Control","Biodiversity/\nResilience","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem \nEngineer","Food Source", "Various"))
-mtext(as.expression(bquote(chi^2~"= 285.8")),adj = 1,at = 7.65,line = -5)
+axis(side=1,at=1:10,las = 2,labels = c('Pollination',"Biologicol Control","Biodiversity/\nResilience","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem \nEngineer","Other"))
 mtext(text = 'df = 8',adj = 1,at = 6.9,line = -5.8)
-mtext(text = 'p < 0.05',adj = 1,at = 7.4,line = -6.6)
-mtext(text = '*',adj = 1,at = 10.25,line = -16.9,cex = 1.5)
+mtext(as.expression(bquote(chi^2~"= 277.78")),adj = 1,at = 7.65,line = -5)
+mtext(text = 'p < 0.001',adj = 1,at = 7.4,line = -6.6)
 
 
 ##Taxon----
 
-#would we be better off with a table?
-
+#did they use functional or phylum 
 TaxLitData1 <- data.frame(Article_Number = Litdata$Article_Number, Taxon = Litdata$Primary_Taxon)
 TaxLitData2 <- data.frame(Article_Number = Litdata$Article_Number,Taxon = Litdata$Secondary_Taxon)
 TaxLitData3 <- data.frame(Article_Number = Litdata$Article_Number,Taxon = Litdata$Third_Taxon)
@@ -272,55 +308,111 @@ head(TaxLitData3);dim(TaxLitData3)
 
 TaxLitData <- rbind(TaxLitData1,TaxLitData2,TaxLitData3)
 head(TaxLitData);dim(TaxLitData)
+table(TaxLitData$Taxon)
 
+TaxLitData$Type <- ifelse(test = TaxLitData$Taxon == 'Flying_Community'|TaxLitData$Taxon == 'Endogeic_Community'|TaxLitData$Taxon == 'Plant_Dwelling' | TaxLitData$Taxon == 'Surface_Active'|TaxLitData$Taxon == 'Water_Community',yes = 'FunArea', no = 'Phylo')
+
+table(TaxLitData$Type)
 
 TaxLitData$Selected <- duplicated.random(TaxLitData$Article_Number)
-head(TaxLitData);dim(TaxLitData)
-#FALSE records are taken as the record for each article
 
 dim(TaxLitData[which(TaxLitData$Selected == "FALSE"),])
 dim(Litdata)
 
+
 Tax_Chi <- TaxLitData[which(TaxLitData$Selected == "FALSE"),]
+#FALSE records are taken as the record for each article
+table(TaxLitData$Taxon)
 
-length(unique(Tax_Chi$Article_Number)) 
+TaxLitData$Taxon <- sub('Neuroptera','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Gastropoda','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Acari','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Collembola','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Orthoptera','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Odonata','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Nematoda','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Opisthopora','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Isoptera','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Dermaptera','Other',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Mites','Other',TaxLitData$Taxon)
 
-Tax_Chi1<- table(Tax_Chi$Taxon)
-#remove categories with less than 5
-
-Tax_Chi1[order(Tax_Chi1,decreasing = T)]
-
-#ES_Chi1<- ES_Chi1[-which(names(ES_Chi1)=='NAME')]
-
-
-#chisq.test(ES_Chi1,p = rep(1/length(ES_Chi1), length(ES_Chi1)))
-
-
-#dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
-#par(mar=c(8.5,4,1,1))
-#plot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,150),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
-#axis(side=1,at=1:10,las = 2,labels = c('Pollination',"Biologicol Control","Biodiversity/\nResilience","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem \nEngineer","Food Source", "Various"))
-#mtext(as.expression(bquote(chi^2~"= 285.8")),adj = 1,at = 7.65,line = -5)
-#mtext(text = 'df = 8',adj = 1,at = 6.9,line = -5.8)
-#mtext(text = 'p < 0.05',adj = 1,at = 7.4,line = -6.6)
-
-#Question #: Functional Groups----
+TaxLitData$Taxon <- sub('Formicidae','Hymenoptera',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Aphididae','Hemiptera',TaxLitData$Taxon)
+TaxLitData$Taxon <- sub('Apocrita','Hymenoptera',TaxLitData$Taxon)
 
 
-##Included Functional Groups----
+
+table(TaxLitData$Taxon)
+
+Tax_Chi <- TaxLitData[which(TaxLitData$Selected == "FALSE"),]
+#FALSE records are taken as the record for each article
+
+#Phylo vs Functional area
+
+Tax_Chi1 <- table(Tax_Chi$Type)
+
+chisq.test(Tax_Chi1,p = rep(1/length(Tax_Chi1), length(Tax_Chi1)))
+
+head(Tax_Chi,4);dim(Tax_Chi)
+
+#Functional group
+
+TaxFUN_Chi<- table(Tax_Chi$Taxon[Tax_Chi$Type == 'FunArea'])
+#remove water which is less than 5
+
+TaxFUN_Chi <- TaxFUN_Chi[-which(names(TaxFUN_Chi)=='Water_Community')]
+chisq.test(TaxFUN_Chi,p = rep(1/length(TaxFUN_Chi), length(TaxFUN_Chi)))
+
+#PHylo
+
+TaxPHY_Chi<- table(Tax_Chi$Taxon[Tax_Chi$Type == 'Phylo'])
+chisq.test(TaxPHY_Chi,p = rep(1/length(TaxPHY_Chi), length(TaxPHY_Chi)))
 
 
-Fun_Chi<- table(Litdata$Functional_Groups)
 
-chisq.test(Fun_Chi,p = rep(1/length(Fun_Chi), length(Fun_Chi)))
-#Reject Null - i.e the number of studies which use spatial scales is different 
 
-dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
-par(mar=c(7,4,1,1))
-plot(c(NA, table(Litdata$Functional_Groups),NA), ylim = c(0,250),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n",xlab = NA,bty = 'n')
-axis(side=1,at = 1:4,las = 2,labels = c(NA,'Functional\n Groups \nNot Included','Functional\n Groups \nIncluded',NA))
-mtext(as.expression(bquote(chi^2~"= 46.282")),adj = 1,at = 3.43,line = -5)
-mtext(text = 'df = 1',adj = 1,at = 3.1,line = -5.8)
-mtext(text = 'p < 0.05',adj = 1,at = 3.27,line = -6.6)
 
-##TO DO - Table of Fun Groups ----
+TaxFUN_Chi
+
+TaxPHY_Chi[order(TaxPHY_Chi,decreasing = T)]
+
+##Figure----
+
+dev.new(height=14,width=14,dpi=80,pointsize=14,noRStudioGD = T)
+par(mfrow = c(2,2))
+par(mar = c(9,4,1,1))
+barplot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,140),las = 2,names.arg = c('Pollination',"Biologicol Control","Biodiversity","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem Engineer","Other"))
+box(bty='l')
+mtext(text = "Articles",side = 2, line = 2.8, cex =1)
+mtext(text = 'df = 8',adj = 1,at = 11,line = -0.6,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 277.78")),adj = 1,at = 11,line = -1.7,cex = 0.9)
+mtext(text = 'p < 0.001',adj = 1,at = 11,line = -2.3,cex=0.9)
+mtext(text = 'a)',at = -3.5,line = -0.1,cex =0.95)
+
+  par(mar = c(9,4,1,1))
+barplot(table(TaxLitData$Type)[order(table(TaxLitData$Type),decreasing = T)],las = 2,names.arg = c('Phylum',"Microhabitat"))
+box(bty='l')
+mtext(text = "Articles",side = 2, line = 2.8, cex =1)
+mtext(text = 'df = 1',adj = 1,at = 2.4,line = -0.6,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 52.249")),adj = 1,at = 2.4,line = -1.7,cex = 0.9)
+mtext(text = 'p < 0.001',adj = 1,at = 2.4,line = -2.3,cex=0.9)
+mtext(text = 'b)',at = -0.5,line = -0.1,cex =0.95)
+
+par(mar = c(7,4,1,1))
+barplot(table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"])[order(table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"]),decreasing = T)],las = 2,names.arg = c('Plant Dwelling',"Surface Active",'Flying','Endogeic','Water'))
+box(bty='l')
+mtext(text = "Articles",side = 2, line = 2.8, cex =1)
+mtext(text = 'df = 3',adj = 1,at = 6,line = -0.8,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 15.06")),adj = 1,at = 6,line = -1.9,cex = 0.9)
+mtext(text = 'p = 0.002',adj = 1,at = 6,line = -2.5,cex=0.9)
+mtext(text = 'c)',at = -1.6,line = -0.1,cex =0.95)
+
+par(mar = c(7,4,1,1))
+barplot(table(TaxLitData$Taxon[TaxLitData$Type == "Phylo"])[order(table(TaxLitData$Taxon[TaxLitData$Type == "Phylo"]),decreasing = T)],las = 2,names.arg = c('Hymenoptera',"Coleoptera",'Diptera','Lepidoptera','Other','Hemiptera','Arachnida'))
+box(bty='l')
+mtext(text = "Articles",side = 2, line = 2.8, cex =1)
+mtext(text = 'df = 9',adj = 1,at = 8.5,line = -0.6,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 177.09")),adj = 1,at = 8.5,line = -1.7,cex = 0.9)
+mtext(text = 'p < 0.001',adj = 1,at = 8.5,line = -2.3,cex=0.9)
+mtext(text = 'd)',at = -2.4,line = -0.1,cex =0.95)
+
