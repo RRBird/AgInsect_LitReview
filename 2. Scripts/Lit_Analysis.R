@@ -1,7 +1,9 @@
 
 library('dplyr')
 library("rworldmap")
+library('plotmath')
 
+install.packages("plotmath")
 #Analysis for Lit review
 
 Litdata <- rawlit
@@ -56,11 +58,13 @@ par(mar=c(0,0,0,0))
 plot(countriesCoarseLessIslands,ylim = c(20,20),col = 'lightgrey')
 points(Conplot$Long,Conplot$Lat,pch = 20, cex = c(Conplot$Articles/7),col = 'black')
 text(Conplot$Long,Conplot$Lat,labels = Conplot$Articles,col = 'white',cex = c(Conplot$Articles/35))
-mtext(text = 'df = 5',adj = 1,at = 170,line = -1.8)
-mtext(as.expression(bquote(chi^2~"= 194.72")),adj = 1,at = 170,line = -3.2)
-mtext(text = 'p < 0.001',adj = 1,at = 170,line = -4)
-mtext(text = 'a)',adj = 1, at = -170, line = -2)
-mtext(text = "*20",adj = 1, at = 168, line = -18.3,cex = 0.9)
+points(Conplot$Long[6],Conplot$Lat[6],cex = c(Conplot$Articles[6]/7),pch = 20, col='black')
+mtext(text = 'df = 5',adj = 1,at = 170,line = -1.8,cex = 0.9)
+mtext(as.expression(bquote(chi^2~"= 194.72")),adj = 1,at = 170,line = -3.2,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 170,line = -4 ,cex = 0.9)
+mtext(text = 'a)',adj = 1, at = -170, line = -2,cex = 0.95)
+mtext(text = "20",adj = 1, at = 179, line = -12,cex = 0.9)
+arrows(x0 = 172.5,y0 = 4,x1 = 161.5,y1 = -33,length = 0.1,angle = 40,lwd = 2)
 
 plot.new()
 
@@ -68,10 +72,10 @@ par(mar=c(11,4,1,1))
 barplot(Bio_Chi[order(Bio_Chi,decreasing = T)],ylim = c(0,200),las = 2,cex.axis = 1.3,names.arg = c("Temperate Forest", "Tropical Forest","Tropical Grassland","Mediterrane","Temperate Grassland","Boreal","Desert",'Montane','Other'),cex.names=1.2)
 box(bty = 'l')
 mtext(text = "Articles",side = 2, line = 3.2, cex =1)
-mtext(text = 'df = 8',adj = 1,at = 11,line = -1,cex = 1)
-mtext(as.expression(bquote(chi^2~"= 591.41")),adj = 1,at = 11,line = -2.3,cex = 1)
-mtext(text = 'p < 0.001',adj = 1,at = 11,line = -3.1,cex = 1)
-mtext(text = 'b)',adj = 1, at = -4, line = 0)
+mtext(text = 'df = 8',adj = 1,at = 11,line = -1,cex = 0.9)
+mtext(as.expression(bquote(chi^2~"= 591.41")),adj = 1,at = 11,line = -2.3,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 11,line = -3.1,cex = 0.9)
+mtext(text = 'b)',adj = 1, at = -4, line = 0,cex = 0.95)
 
 plot.new()
 
@@ -87,14 +91,14 @@ chisq.test(Spat_Chi,p = rep(1/length(Spat_Chi), length(Spat_Chi)))
 
 ##Figure----
 
-dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
+dev.new(height=3.5,width=3.5,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1))
 barplot(table(Litdata$Spatial_Scale)[order(table(Litdata$Spatial_Scale),decreasing = T)],names.arg = c('No Environmental \n Variables','Site','Landscape','Both'),las = 2,cex.axis = 1.2,cex.names = 1.1,)
 box(bty='l')
-mtext(text = "Articles",side = 2, line = 2.8, cex =1.2)
-mtext(text = 'df = 3',adj = 1,at = 4.8,line = -1,cex = 1.1)
-mtext(as.expression(bquote(chi^2~"= 36.83")),adj = 1,at = 4.8,line = -2,cex = 1.1)
-mtext(text = 'p < 0.001',adj = 1,at = 4.8,line = -2.7,cex = 1.1)
+mtext(text = "Articles",side = 2, line = 2.8, cex =1)
+mtext(text = 'df = 3',adj = 1,at = 4.8,line = -1,cex = 0.9)
+mtext(as.expression(bquote(chi^2~"= 36.83")),adj = 1,at = 4.8,line = -2,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 4.8,line = -2.7,cex = 0.9)
 
 ##TO DO - Table of Environmental variables ----
 
@@ -209,6 +213,7 @@ Farm_Chi1<- table(Farm_Chi$Type)
 chisq.test(Farm_Chi1,p = rep(1/length(Farm_Chi1), length(Farm_Chi1)))
 
 
+
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8.5,4,1,1))
 plot(table(FarmLitData$Type)[order(table(FarmLitData$Type),decreasing = T)], ylim = c(0,170),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
@@ -221,25 +226,25 @@ mtext(text = '*',adj = 1,at = 8.25,line = -16.9,cex = 1.5)
 
 ##Figure----
 
-dev.new(height=7,width=14,dpi=80,pointsize=14,noRStudioGD = T)
+dev.new(height=3.5,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1),mfrow = c(1,2))
-barplot(table(ManLitData$Management), ylim = c(0,140),las = 2, names.arg = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively Managed","Other","IPM","Low Input","Ag Enviro Scheme","Environmental","Commercial","Gradient Inputs"))
+barplot(table(ManLitData$Management), ylim = c(0,140),las = 2, names.arg = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively Managed","Other","IPM","Low Input","Ag Enviro Scheme","Environmental","Commercial","Gradient Inputs"),cex.names = 0.9)
 box(bty='l')
-mtext(text = "Articles",side = 2, line = 2.8, cex =1.2)
-mtext(text = 'df = 11',adj = 1,at = 15.0,line = -1)
-mtext(as.expression(bquote(chi^2~"= 559.08")),adj = 1,at = 15,line = -2)
-mtext(text = 'p < 0.001',adj = 1,at = 15,line = -2.6)
-mtext(text = 'a)',adj = 1,at = -2.5,line = 0,cex = 1.1)
+mtext(text = "Articles",side = 2, line = 2.8, cex =1)
+mtext(text = 'df = 11',adj = 1,at = 15.0,line = -1, cex = 0.9)
+mtext(as.expression(bquote(chi^2~"= 560.24")),adj = 1,at = 15,line = -2,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 15,line = -2.6,cex = 0.9)
+mtext(text = 'a)',adj = 1,at = -4.3,line = 0, cex = 0.95)
 
 
 par(mar=c(9,4,1,1))
-barplot(table(FarmLitData$Type)[order(table(FarmLitData$Type),decreasing = T)],las = 2, ylim = c(0,170), names.arg = c('Crops','Ground Fruit \n & Vegetables','Orchard','Livestock','Agroforestry','Unspecified','Other') )
+barplot(table(FarmLitData$Type)[order(table(FarmLitData$Type),decreasing = T)],las = 2, names.arg = c('Crops','Low Fruit/Vegetables','Orchard','Livestock','Agroforestry','Unspecified','Other'), cex.names = 0.9)
 box(bty = 'l')
-mtext(text = "Articles",side = 2, line = 2.8, cex =1.2)
-mtext(text = 'df = 6',adj = 1,at = 8.5,line = -1)
-mtext(as.expression(bquote(chi^2~"= 267.38")),adj = 1,at = 8.5,line = -2)
-mtext(text = 'p < 0.001',adj = 1,at = 8.5,line = -2.6)
-mtext(text = 'b)',adj = 1,at = -1.3,line = 0,cex = 1.1)
+mtext(text = "Articles",side = 2, line = 2.8, cex =1)
+mtext(text = 'df = 6',adj = 1,at = 8.5,line = -1,cex = 0.9)
+mtext(as.expression(bquote(chi^2~"= 267.38")),adj = 1,at = 8.5,line = -2,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 8.5,line = -2.6,cex = 0.9)
+mtext(text = 'b)',adj = 1,at = -2.4,line = 0,cex = 0.95)
 
 
 #Question #: Insect Focus ----
@@ -385,18 +390,18 @@ par(mar = c(9,4,1,1))
 barplot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,140),las = 2,names.arg = c('Pollination',"Biologicol Control","Biodiversity","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem Engineer","Other"))
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
-mtext(text = 'df = 8',adj = 1,at = 11,line = -0.6,cex=0.9)
-mtext(as.expression(bquote(chi^2~"= 277.78")),adj = 1,at = 11,line = -1.7,cex = 0.9)
-mtext(text = 'p < 0.001',adj = 1,at = 11,line = -2.3,cex=0.9)
+mtext(text = 'df = 9',adj = 1,at = 11,line = -0.6,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 372.95")),adj = 1,at = 11,line = -1.7,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 11,line = -2.5,cex=0.9)
 mtext(text = 'a)',at = -3.5,line = -0.1,cex =0.95)
 
   par(mar = c(9,4,1,1))
-barplot(table(TaxLitData$Type)[order(table(TaxLitData$Type),decreasing = T)],las = 2,names.arg = c('Phylum',"Microhabitat"))
+barplot(table(TaxLitData$Type)[order(table(TaxLitData$Type),decreasing = T)],las = 2,names.arg = c('Taxon',"Microhabitat"))
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
 mtext(text = 'df = 1',adj = 1,at = 2.4,line = -0.6,cex=0.9)
-mtext(as.expression(bquote(chi^2~"= 52.249")),adj = 1,at = 2.4,line = -1.7,cex = 0.9)
-mtext(text = 'p < 0.001',adj = 1,at = 2.4,line = -2.3,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 50.72")),adj = 1,at = 2.4,line = -1.7,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 2.4,line = -2.5,cex=0.9)
 mtext(text = 'b)',at = -0.5,line = -0.1,cex =0.95)
 
 par(mar = c(7,4,1,1))
@@ -404,17 +409,17 @@ barplot(table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"])[order(table(TaxLit
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
 mtext(text = 'df = 3',adj = 1,at = 6,line = -0.8,cex=0.9)
-mtext(as.expression(bquote(chi^2~"= 15.06")),adj = 1,at = 6,line = -1.9,cex = 0.9)
-mtext(text = 'p = 0.002',adj = 1,at = 6,line = -2.5,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 14.68")),adj = 1,at = 6,line = -1.9,cex = 0.9)
+mtext(text = expression(italic('p') == 0.002),adj = 1,at = 6,line = -2.7,cex=0.9)
 mtext(text = 'c)',at = -1.6,line = -0.1,cex =0.95)
 
 par(mar = c(7,4,1,1))
 barplot(table(TaxLitData$Taxon[TaxLitData$Type == "Phylo"])[order(table(TaxLitData$Taxon[TaxLitData$Type == "Phylo"]),decreasing = T)],las = 2,names.arg = c('Hymenoptera',"Coleoptera",'Diptera','Lepidoptera','Other','Hemiptera','Arachnida'))
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
-mtext(text = 'df = 9',adj = 1,at = 8.5,line = -0.6,cex=0.9)
-mtext(as.expression(bquote(chi^2~"= 177.09")),adj = 1,at = 8.5,line = -1.7,cex = 0.9)
-mtext(text = 'p < 0.001',adj = 1,at = 8.5,line = -2.3,cex=0.9)
+mtext(text = 'df = 6',adj = 1,at = 8.5,line = -0.6,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 209.22")),adj = 1,at = 8.5,line = -1.7,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 8.5,line = -2.5,cex=0.9)
 mtext(text = 'd)',at = -2.4,line = -0.1,cex =0.95)
 
 
