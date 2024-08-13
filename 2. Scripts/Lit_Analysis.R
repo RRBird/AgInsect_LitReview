@@ -85,6 +85,7 @@ Spat_Chi<- table(Spat_Chi$Spatial_Scale)
 chisq.test(Spat_Chi,p = rep(1/length(Spat_Chi), length(Spat_Chi)))
 #Reject Null - i.e the number of studies which use dpatial scales is different 
 
+##Figure----
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1))
@@ -92,7 +93,7 @@ barplot(table(Litdata$Spatial_Scale)[order(table(Litdata$Spatial_Scale),decreasi
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1.2)
 mtext(text = 'df = 3',adj = 1,at = 4.8,line = -1,cex = 1.1)
-mtext(as.expression(bquote(chi^2~"= 27.33")),adj = 1,at = 4.8,line = -2,cex = 1.1)
+mtext(as.expression(bquote(chi^2~"= 36.83")),adj = 1,at = 4.8,line = -2,cex = 1.1)
 mtext(text = 'p < 0.001',adj = 1,at = 4.8,line = -2.7,cex = 1.1)
 
 ##TO DO - Table of Environmental variables ----
@@ -218,7 +219,7 @@ mtext(text = 'p < 0.05',adj = 1,at = 7.2,line = -6.6)
 mtext(text = '*',adj = 1,at = 9.25,line = -16.9,cex = 1.5)
 mtext(text = '*',adj = 1,at = 8.25,line = -16.9,cex = 1.5)
 
-#Figure
+##Figure----
 
 dev.new(height=7,width=14,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1),mfrow = c(1,2))
@@ -415,4 +416,5 @@ mtext(text = 'df = 9',adj = 1,at = 8.5,line = -0.6,cex=0.9)
 mtext(as.expression(bquote(chi^2~"= 177.09")),adj = 1,at = 8.5,line = -1.7,cex = 0.9)
 mtext(text = 'p < 0.001',adj = 1,at = 8.5,line = -2.3,cex=0.9)
 mtext(text = 'd)',at = -2.4,line = -0.1,cex =0.95)
+
 
