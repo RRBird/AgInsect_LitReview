@@ -54,11 +54,11 @@ chisq.test(Bio_Chi,p = rep(1/length(Bio_Chi), length(Bio_Chi)))
 ##Figure----
 str(countriesCoarseLessIslands)
 
-dev.new(height=18,width=14,dpi=80,pointsize=14,noRStudioGD = T)
+dev.new(height=17,width=14,dpi=80,pointsize=14,noRStudioGD = T)
 layout(mat = matrix(c(1,1,1,1,
                       2,2,3,4),nrow = 2,byrow = T),heights = 1,1)
 par(mar=c(0,0,0,0))
-plot(countriesCoarseLessIslands,col = 'lightgrey',ylim = c(-30,80))
+plot(countriesCoarseLessIslands,col = 'lightgrey',ylim = c(-10,80))
 points(Conplot$Long,Conplot$Lat,pch = 20, cex = c(Conplot$Articles/7),col = 'black')
 text(Conplot$Long,Conplot$Lat,labels = Conplot$Articles,col = 'white',cex = c(Conplot$Articles/35))
 points(Conplot$Long[6],Conplot$Lat[6],cex = c(Conplot$Articles[6]/7),pch = 20, col='black')
@@ -66,8 +66,10 @@ mtext(text = 'df = 5',adj = 1,at = 170,line = -1.8,cex = 0.9)
 mtext(as.expression(bquote(chi^2~"= 194.72")),adj = 1,at = 170,line = -3.2,cex = 0.9)
 mtext(text = expression(italic('p')< 0.001),adj = 1,at = 170,line = -4.2 ,cex = 0.9)
 mtext(text = 'a)',adj = 1, at = -170, line = -2,cex = 0.95)
-mtext(text = "20",adj = 1, at = 179, line = -12,cex = 0.9)
+mtext(text = "20",adj = 1, at = 179, line = -13.5,cex = 0.9)
 arrows(x0 = 172.5,y0 = 4,x1 = 161.5,y1 = -33,length = 0.1,angle = 40,lwd = 2)
+arrows(x0 = 160.5,y0 = -37,x1 = 150,y1 = -30,length = 0.1,angle = 20,lwd = 2)
+arrows(x0 = 160,y0 = -37,x1 = 175.5,y1 = -39,length = 0.1,angle = 20,lwd = 2)
 
 par(mar=c(11,4,1,1))
 barplot(Bio_Chi[order(Bio_Chi,decreasing = T)],ylim = c(0,200),las = 2,cex.axis = 1.3,names.arg = c("Temperate Forest", "Tropical Forest","Tropical Grassland","Mediterrane","Temperate Grassland","Boreal","Desert",'Montane','Other'),cex.names=1.2)
@@ -76,7 +78,7 @@ mtext(text = "Articles",side = 2, line = 2.7, cex =1)
 mtext(text = 'df = 8',adj = 1,at = 11,line = -1,cex = 0.9)
 mtext(as.expression(bquote(chi^2~"= 591.41")),adj = 1,at = 11,line = -2.3,cex = 0.9)
 mtext(text = expression(italic('p')< 0.001),adj = 1,at = 11,line = -3.3,cex = 0.9)
-mtext(text = 'b)',adj = 1, at = -3.2, line = 0,cex = 0.95)
+mtext(text = 'b)',adj = 1, at = -2.9, line = 0,cex = 0.95)
 
 plot.new()
 plot.new()
@@ -93,9 +95,9 @@ chisq.test(Spat_Chi,p = rep(1/length(Spat_Chi), length(Spat_Chi)))
 
 ##Figure----
 
-dev.new(height=5,width=3.5,dpi=80,pointsize=14,noRStudioGD = T)
+dev.new(height=4.5,width=3.5,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1))
-barplot(table(Litdata$Spatial_Scale)[order(table(Litdata$Spatial_Scale),decreasing = T)],names.arg = c('No Environmental \n Variables','Site','Landscape','Both'),las = 2,cex.axis = 1.2,cex.names = 1.1,)
+barplot(table(Litdata$Spatial_Scale)[order(table(Litdata$Spatial_Scale),decreasing = T)],names.arg = c('No Environmental \n Variables','Site','Landscape','Both'),las = 2,cex.axis = 1.1,cex.names = 1.1,)
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
 mtext(text = 'df = 3',adj = 1,at = 4.8,line = -1,cex = 0.9)
@@ -226,7 +228,7 @@ mtext(text = '*',adj = 1,at = 8.25,line = -16.9,cex = 1.5)
 
 ##Figure----
 
-dev.new(height=5,width=7,dpi=80,pointsize=14,noRStudioGD = T)
+dev.new(height=4.5,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1),mfrow = c(1,2))
 barplot(table(ManLitData$Management), ylim = c(0,140),las = 2, names.arg = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively Managed","Other","IPM","Low Input","Ag Enviro Scheme","Environmental","Commercial","Gradient Inputs"),cex.names = 0.9)
 box(bty='l')
@@ -384,9 +386,9 @@ TaxPHY_Chi[order(TaxPHY_Chi,decreasing = T)]
 
 ##Figure----
 
-dev.new(height=18,width=14,dpi=80,pointsize=14,noRStudioGD = T)
+dev.new(height=17,width=14,dpi=80,pointsize=14,noRStudioGD = T)
 par(mfrow = c(2,2))
-par(mar = c(7,4,1,1))
+par(mar = c(9,4,1,1))
 barplot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,140),las = 2,names.arg = c('Pollination',"Biologicol Control","Biodiversity","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem Engineer","Other"))
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
@@ -395,7 +397,7 @@ mtext(as.expression(bquote(chi^2~"= 372.95")),adj = 1,at = 11,line = -1.7,cex = 
 mtext(text = expression(italic('p')< 0.001),adj = 1,at = 11,line = -2.5,cex=0.9)
 mtext(text = 'a)',at = -4.5,line = -0.1,cex =0.95)
 
-  par(mar = c(7,4,1,1))
+  par(mar = c(9,4,1,1))
 barplot(table(TaxLitData$Type)[order(table(TaxLitData$Type),decreasing = T)],las = 2,names.arg = c('Taxon',"Microhabitat"))
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
@@ -404,22 +406,24 @@ mtext(as.expression(bquote(chi^2~"= 50.72")),adj = 1,at = 2.6,line = -1.7,cex = 
 mtext(text = expression(italic('p')< 0.001),adj = 1,at = 2.6,line = -2.5,cex=0.9)
 mtext(text = 'b)',at = -0.8,line = -0.1,cex =0.95)
 
-par(mar = c(7,4,1,1))
-barplot(table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"])[order(table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"]),decreasing = T)],las = 2,names.arg = c('Plant Dwelling',"Surface Active",'Flying','Endogeic','Water'))
-box(bty='l')
-mtext(text = "Articles",side = 2, line = 2.8, cex =1)
-mtext(text = 'df = 3',adj = 1,at = 6,line = -0.8,cex=0.9)
-mtext(as.expression(bquote(chi^2~"= 14.68")),adj = 1,at = 6,line = -1.9,cex = 0.9)
-mtext(text = expression(italic('p') == 0.002),adj = 1,at = 6,line = -2.7,cex=0.9)
-mtext(text = 'c)',at = -2,line = -0.1,cex =0.95)
-
-par(mar = c(7,4,1,1))
+par(mar = c(9,4,1,1))
 barplot(table(TaxLitData$Taxon[TaxLitData$Type == "Phylo"])[order(table(TaxLitData$Taxon[TaxLitData$Type == "Phylo"]),decreasing = T)],las = 2,names.arg = c('Hymenoptera',"Coleoptera",'Diptera','Lepidoptera','Other','Hemiptera','Arachnida'))
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
 mtext(text = 'df = 6',adj = 1,at = 8.5,line = -0.6,cex=0.9)
 mtext(as.expression(bquote(chi^2~"= 209.22")),adj = 1,at = 8.5,line = -1.7,cex = 0.9)
 mtext(text = expression(italic('p')< 0.001),adj = 1,at = 8.5,line = -2.5,cex=0.9)
-mtext(text = 'd)',at = -3.2,line = -0.1,cex =0.95)
+mtext(text = 'c)',at = -3.2,line = -0.1,cex =0.95)
+
+par(mar = c(9,4,1,1))
+barplot(table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"])[order(table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"]),decreasing = T)],las = 2,names.arg = c('Plant Dwelling',"Surface Active",'Flying','Endogeic','Water'))
+box(bty='l')
+mtext(text = "Articles",side = 2, line = 2.8, cex =1)
+mtext(text = 'df = 3',adj = 1,at = 6,line = -0.6,cex=0.9)
+mtext(as.expression(bquote(chi^2~"= 14.68")),adj = 1,at = 6,line = -1.7,cex = 0.9)
+mtext(text = expression(italic('p') == 0.002),adj = 1,at = 6,line = -2.5,cex=0.9)
+mtext(text = 'd)',at = -2,line = -0.1,cex =0.95)
+
+
 
 
