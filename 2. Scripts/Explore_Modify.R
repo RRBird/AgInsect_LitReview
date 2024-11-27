@@ -11,11 +11,17 @@ library('grid')
 
 getwd()
 
+
 rawlit <- read.csv("1. Data/LitData.csv")
+
+data <- rawlit
+
 
 head(rawlit,3);dim(rawlit)
 str(rawlit)
 rawlit[rawlit == ""] <- NA
+
+
 
 #Farm Management----
 
@@ -84,9 +90,21 @@ mtext(text = "Number of Articles",
       side = 2,line = 2.5)
 
 #Continent Graph
+table(rawlit$Continent)
+
+
 
 rawlit$Continent <- sapply(rawlit$Continent, factor, levels = c("Europe", "Asia","North_America","South_America","Africa","Oceania","Multiple"))
 str(rawlit)
+
+pratice <- rawlit
+
+pratice <- pratice[,-c(1:6,9)]
+
+pratice <- pratice[,-c(pratice$Primary_Habitat)]
+
+pratice[,1]
+
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(5.5,4,1,1))
