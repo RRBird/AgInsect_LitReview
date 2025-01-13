@@ -308,4 +308,24 @@ mtext(as.expression(bquote(chi^2~"= 46.282")),adj = 1,at = 3.43,line = -5)
 mtext(text = 'df = 1',adj = 1,at = 3.1,line = -5.8)
 mtext(text = 'p < 0.05',adj = 1,at = 3.27,line = -6.6)
 
-##TO DO - Table of Fun Groups ----
+#Old Figure code----
+
+dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
+par(mar=c(8.5,4,1,1))
+barplot(table(ManLitData$Management), ylim = c(0,150),ylab = "Number of Articles",xaxt="n")
+box(bty='l')
+axis(side=1,at=1:10,las = 2,labels = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively \nManaged","Other","IPM","Low Input","Agri-Enviro Scheme","Environmental"))
+mtext(text = 'df = 11',adj = 1,at = 7.0,line = -5.8)
+mtext(as.expression(bquote(chi^2~"= 433.29")),adj = 1,at = 7.9,line = -5)
+mtext(text = 'p < 0.05',adj = 1,at = 7.4,line = -6.6)
+
+
+dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
+par(mar=c(8.5,4,1,1))
+plot(table(FarmLitData$Type)[order(table(FarmLitData$Type),decreasing = T)], ylim = c(0,170),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
+axis(side=1,at=1:9,las = 2,labels = c('Crops','Ground Fruit \n & Vegetables','Orchard','Livestock','Agroforestry','Unspecified','Silvoarable/\nSilvopastural','Various','Aquaculture'))
+mtext(as.expression(bquote(chi^2~"= 268.13")),adj = 1,at = 7.57,line = -5)
+mtext(text = 'df = 6',adj = 1,at = 6.7,line = -5.8)
+mtext(text = 'p < 0.05',adj = 1,at = 7.2,line = -6.6)
+mtext(text = '*',adj = 1,at = 9.25,line = -16.9,cex = 1.5)
+mtext(text = '*',adj = 1,at = 8.25,line = -16.9,cex = 1.5)

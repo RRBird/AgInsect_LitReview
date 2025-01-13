@@ -30,7 +30,7 @@ table(c(rawlit$Primary_Management_Type,rawlit$Secondary_Management_Type,rawlit$T
 
 rawlit$Primary_Management_Type<-sub("Intensive_vs_Extensive","Intensively_Managed",rawlit$Primary_Management_Type)
 
-replace <- list("Climate_Smart", "Conservation_Agriculture","Ecological_Compensation_Areas","Sustainable_Stratergies","Agroecological","Ecological_Cultivation")
+replace <- list("Climate_Smart", "Conservation_Agriculture","Ecological_Compensation_Areas","Sustainable_Stratergies","Agroecological","Ecological_Cultivation","IFP","RBAPS")
 
 for (i in replace){
   rawlit$Primary_Management_Type <- sub(i,"Environmental",rawlit$Primary_Management_Type)
@@ -38,7 +38,7 @@ for (i in replace){
   rawlit$Third_Management_Type <- sub(i,"Environmental",rawlit$Third_Management_Type)
 }
 
-replace2<- list("IFPMD", "Minimal_Management","Palmette","Small_Scale_Farm","Abandoned","Homegardens","Integrated_Production","Mixed_Input","QSMAS","IFP","RBAPS")
+replace2<- list("IFPMD", "Minimal_Management","Palmette","Small_Scale_Farm","Abandoned","Homegardens","Integrated_Production","Mixed_Input","QSMAS")
 
 
 for (i in replace2){
@@ -47,18 +47,24 @@ for (i in replace2){
   rawlit$Third_Management_Type <- sub(i,"Other",rawlit$Third_Management_Type)
 }
 
+
+rawlit$Primary_Management_Type<-sub("Commercial","Conventional",rawlit$Primary_Management_Type)
+
+rawlit$Primary_Management_Type<-sub("Gradient_Inputs","Intensity_Gradient",rawlit$Primary_Management_Type)
+
 table(c(rawlit$Primary_Management_Type,rawlit$Secondary_Management_Type,rawlit$Third_Management_Type))
 
-#Farm Management Type Graph
+
+#Management Type basic bar Graph
 
 cols <- c("Primary_Management_Type","Secondary_Management_Type","Third_Management_Type")
 
-rawlit[cols] <- lapply(rawlit[cols], factor, levels =c("Unspecified","Conventional","Organic","Intensity_Gradient","Intensively_Managed","Other","IPM","Low_Input","AgEnviroScheme","Environmental","Commercial","Gradient_Inputs"))
+rawlit[cols] <- lapply(rawlit[cols], factor, levels =c("Unspecified","Conventional","Organic","Intensity_Gradient","Intensively_Managed","Other","IPM","Low_Input","AgEnviroScheme","Environmental"))
 str(rawlit)
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1))
-barplot(table(c(rawlit$Primary_Management_Type,rawlit$Secondary_Management_Type,rawlit$Third_Management_Type)),names.arg = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively Managed","Other","IPM","Low Input","Ag Enviro Scheme","Environmental","Commercial","Gradient Inputs"),las = 2,axis.lty =1)
+barplot(table(c(rawlit$Primary_Management_Type,rawlit$Secondary_Management_Type,rawlit$Third_Management_Type)),names.arg = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively Managed","Other","IPM","Low Input","Ag Enviro Scheme","Environmental"),las = 2,axis.lty =1)
 text(x = -2.3,
      y = 110,
      labels = "Number of Articles",
@@ -94,7 +100,7 @@ table(rawlit$Continent)
 
 
 
-rawlit$Continent <- sapply(rawlit$Continent, factor, levels = c("Europe", "Asia","North_America","South_America","Africa","Oceania","Multiple"))
+rawlit$Continent <- sapply(rawlit$Continent, factor, levels = c("Europe", "Asia","North_America","South_America","Africa","Oceania"))
 str(rawlit)
 
 pratice <- rawlit
@@ -108,7 +114,7 @@ pratice[,1]
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(5.5,4,1,1))
-barplot(table(rawlit$Continent), las=2,axis.lty=1,names.arg = c("Europe", "Asia","North \nAmerica","South \nAmerica","Africa","Oceania","Multiple \nContinents"))
+barplot(table(rawlit$Continent), las=2,axis.lty=1,names.arg = c("Europe", "Asia","North \nAmerica","South \nAmerica","Africa","Oceania"))
 text(x = -1.3,
      y = 110,
      labels = "Number of Articles",
@@ -123,12 +129,29 @@ table(rawlit$Biome)
 
 #Biome Graph
 
-rawlit$Biome <- sapply(rawlit$Biome, factor, levels = c("Temperate_Forest", "Tropical_Subtropical_Forest","Tropical_Subtropical_Grasslands","Mediterrane","Temperate_Grasslands","Boreal","Desert","Montane","Various","Unspecified"))
+
+rawlit$Primary_Management_Type<-sub("Intensive_vs_Extensive","Intensively_Managed",rawlit$Primary_Management_Type)
+
+table(rawlit$Biome)
+
+rawlit$Biome<-sub("Mediterrane","Mediterranean",rawlit$Biome)
+
+rawlit$Biome<-sub("Temperate_Forest","Temperate",rawlit$Biome)
+rawlit$Biome<-sub("Temperate_Grasslands","Temperate",rawlit$Biome)
+
+rawlit$Biome<-sub("Tropical_Subtropical_Grasslands","Tropical_Subtropical",rawlit$Biome)
+rawlit$Biome<-sub("Tropical_Subtropical_Forest","Tropical_Subtropical",rawlit$Biome)
+
+
+table(rawlit$Biome)
+
+
+rawlit$Biome <- sapply(rawlit$Biome, factor, levels = c("Temperate", "Tropical_Subtropical","Mediterranean","Boreal","Desert","Montane","Various","Unspecified"))
 str(rawlit)
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(10,4,1,1))
-barplot(table(rawlit$Biome), ylim = c(0,200),las = 2, axis.lty = 1, names.arg = c("Temperate Forest", "Tropical/Subtropical \nForest","Tropical/Subtropical \nGrassland","Mediterrane","Temperate Grasslands","Boreal","Desert","Montane","Various","Unspecified"))
+barplot(table(rawlit$Biome), ylim = c(0,200),las = 2, axis.lty = 1, names.arg = c("Temperate", "Tropical/Subtropical","Mediterrane","Boreal","Desert","Montane","Various","Unspecified"))
 text(x = -2,
      y = 160,
      labels = "Number of Articles",
