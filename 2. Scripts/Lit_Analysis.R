@@ -49,6 +49,7 @@ Biome$Biome<-sub('Various',"Other",Biome$Biome)
 table(Biome$Biome)
 
 Bio_Chi<- table(Biome$Biome)
+Bio_Chi[order(Bio_Chi, decreasing = T)]
 
 chisq.test(Bio_Chi,p = rep(1/length(Bio_Chi), length(Bio_Chi)))
 #Number of studies are different in different Biomes 
@@ -95,6 +96,8 @@ Spatial <- Litdata
 table(Spatial$Spatial_Scale)
 
 Spat_Chi<- table(Spatial$Spatial_Scale)
+Spat_Chi[order(Spat_Chi, decreasing = T)]
+
 
 chisq.test(Spat_Chi,p = rep(1/length(Spat_Chi), length(Spat_Chi)))
 #number of studies which use the various spatial scales is different 
@@ -130,6 +133,11 @@ head(ManLitData3);dim(ManLitData3)
 
 ManLitData <- rbind(ManLitData1,ManLitData2,ManLitData3)
 head(ManLitData);dim(ManLitData)
+
+table(ManLitData$Management)
+ManLitData$Management <- sub('Intensively_Managed',"Conventional",ManLitData$Management)
+table(ManLitData$Management)
+
 
 
 #Function found online not written by me  https://www.r-bloggers.com/2013/01/randomly-deleting-duplicate-rows-from-a-dataframe/
@@ -174,6 +182,8 @@ Man_Chi <- ManLitData[which(ManLitData$Selected == "FALSE"),]
 length(unique(Man_Chi$Article_Number)) 
 
 Man_Chi1<- table(Man_Chi$Management)
+Man_Chi1[order(Man_Chi1, decreasing = T)]
+
 
 chisq.test(Man_Chi1,p = rep(1/length(Man_Chi1), length(Man_Chi1)))
 #the number of studies which use different management types is different 
@@ -214,7 +224,7 @@ Farm_Chi <- FarmLitData[which(FarmLitData$Selected == "FALSE"),]
 length(unique(Farm_Chi$Article_Number)) 
 
 Farm_Chi1<- table(Farm_Chi$Type)
-#remove categories with less than 5 -> None less than 5
+Farm_Chi1[order(Farm_Chi1, decreasing = T)]
 
 chisq.test(Farm_Chi1,p = rep(1/length(Farm_Chi1), length(Farm_Chi1)))
 
@@ -223,17 +233,17 @@ chisq.test(Farm_Chi1,p = rep(1/length(Farm_Chi1), length(Farm_Chi1)))
 
 dev.new(height=4.5,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1),mfrow = c(1,2))
-barplot(table(ManLitData$Management), ylim = c(0,140),las = 2, names.arg = c("Unspecified","Conventional","Organic","Intensity Gradient","Intensively Managed","Other","IPM","Low Input","Agri-Enviro Scheme","Environmental"),cex.names = 0.9)
+barplot(Man_Chi1[order(Man_Chi1, decreasing = T)], ylim = c(0,140),las = 2, names.arg = c("Unspecified","Conventional","Organic","Intensity Gradient","Other","IPM","Low Input","Agri-Enviro Scheme","Environmental"),cex.names = 0.9)
 box(bty='l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
-mtext(text = 'df = 9',adj = 1,at = 12.0,line = -1, cex = 0.9)
-mtext(as.expression(bquote(chi^2~"= 433.29")),adj = 1,at = 12,line = -2,cex = 0.9)
-mtext(text = expression(italic('p')< 0.001),adj = 1,at = 12,line = -2.6,cex = 0.9)
-mtext(text = 'a)',adj = 1,at = -4.3,line = 0, cex = 0.95)
+mtext(text = 'df = 8',adj = 1,at = 10,line = -1, cex = 0.9)
+mtext(as.expression(bquote(chi^2~"= 427.47")),adj = 1,at = 10,line = -2,cex = 0.9)
+mtext(text = expression(italic('p')< 0.001),adj = 1,at = 10,line = -2.6,cex = 0.9)
+mtext(text = 'a)',adj = 1,at = -3.8,line = 0, cex = 0.95)
 
 
 par(mar=c(9,4,1,1))
-barplot(table(FarmLitData$Type)[order(table(FarmLitData$Type),decreasing = T)],las = 2, names.arg = c('Crops','Low Fruit/Vegetables','Orchard','Livestock','Agroforestry','Unspecified','Other'), cex.names = 0.9)
+barplot(Farm_Chi1[order(Farm_Chi1, decreasing = T)],las = 2, names.arg = c('Crops','Low Fruit/Vegetables','Orchard','Livestock','Agroforestry','Unspecified','Other'), cex.names = 0.9)
 box(bty = 'l')
 mtext(text = "Articles",side = 2, line = 2.8, cex =1)
 mtext(text = 'df = 6',adj = 1,at = 8.5,line = -1,cex = 0.9)
@@ -277,6 +287,7 @@ ESLitData$ES <- sub('Food_Source','Other',ESLitData$ES)
 ESLitData$ES <- sub('Various','Other',ESLitData$ES)
 
 ES_Chi1<- table(ES_Chi$ES)
+ES_Chi1[order(ES_Chi1, decreasing = T)]
 
 
 
@@ -351,10 +362,20 @@ Tax_Chi <- TaxLitData[which(TaxLitData$Selected == "FALSE"),]
 #Phylo vs Functional area
 
 Tax_Chi1 <- table(Tax_Chi$Type)
+Tax_Chi1[order(Tax_Chi1, decreasing = T)]
+
 
 chisq.test(Tax_Chi1,p = rep(1/length(Tax_Chi1), length(Tax_Chi1)))
 
 head(Tax_Chi,4);dim(Tax_Chi)
+
+#PHylo
+
+TaxPHY_Chi<- table(Tax_Chi$Taxon[Tax_Chi$Type == 'Phylo'])
+chisq.test(TaxPHY_Chi,p = rep(1/length(TaxPHY_Chi), length(TaxPHY_Chi)))
+
+
+TaxPHY_Chi[order(TaxPHY_Chi,decreasing = T)]
 
 #Functional group
 
@@ -364,18 +385,8 @@ TaxFUN_Chi<- table(Tax_Chi$Taxon[Tax_Chi$Type == 'FunArea'])
 TaxFUN_Chi <- TaxFUN_Chi[-which(names(TaxFUN_Chi)=='Water_Community')]
 chisq.test(TaxFUN_Chi,p = rep(1/length(TaxFUN_Chi), length(TaxFUN_Chi)))
 
-#PHylo
+TaxFUN_Chi[order(TaxFUN_Chi, decreasing = T)]
 
-TaxPHY_Chi<- table(Tax_Chi$Taxon[Tax_Chi$Type == 'Phylo'])
-chisq.test(TaxPHY_Chi,p = rep(1/length(TaxPHY_Chi), length(TaxPHY_Chi)))
-
-
-
-
-
-TaxFUN_Chi
-
-TaxPHY_Chi[order(TaxPHY_Chi,decreasing = T)]
 
 ##Figure----
 
