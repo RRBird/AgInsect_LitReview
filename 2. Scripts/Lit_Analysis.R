@@ -10,7 +10,14 @@ head(Litdata,3);dim(Litdata)
 
 table(Litdata$Spatial_Scale)
 
+#TEST OF THE RANDOM SELECTION----
+testdata <- ESLitData
+head(testdata);dim(testdata)
 
+testdata$Selected <- duplicated.random(testdata$Article_Number)
+testChi <- testdata[which(testdata$Selected == "FALSE"),]
+testChi<- table(testChi$ES)
+testChi[order(testChi, decreasing = T)]
 
 
 
@@ -169,12 +176,12 @@ duplicated.random = function(x, incomparables = FALSE, ...)
 
 #Must take only one observation from each article to fit chi squared assumptions, above function used to randomly select a single observation per article number
 
+
 ManLitData$Selected <- duplicated.random(ManLitData$Article_Number)
 head(ManLitData);dim(ManLitData)
 #FALSE records are taken as the record for each article
 
 dim(ManLitData[which(ManLitData$Selected == "FALSE"),])
-
 
 
 Man_Chi <- ManLitData[which(ManLitData$Selected == "FALSE"),]
