@@ -1,11 +1,13 @@
+#This script contains exploration and modification of variables collected to answer questions for systematic literature review ad some variables which were ultimately not chosen as they weren't in the scope of questions
+
 #Packages----
 install.packages("stringi")
-install.packages('patchwork')
+install.packages("patchwork")
 
 library("stringi")
 library("dplyr")
-library('patchwork')
-library('grid')
+library("patchwork")
+library("grid")
 
 #Raw data----
 
@@ -21,14 +23,13 @@ head(rawlit,3);dim(rawlit)
 str(rawlit)
 rawlit[rawlit == ""] <- NA
 
-
-
 #Farm Management----
 
-#putting minor management types into categories
+#regrouping management categories 
 table(c(rawlit$Primary_Management_Type,rawlit$Secondary_Management_Type,rawlit$Third_Management_Type))
 
 rawlit$Primary_Management_Type<-sub("Intensive_vs_Extensive","Intensively_Managed",rawlit$Primary_Management_Type)
+
 
 replace <- list("Climate_Smart", "Conservation_Agriculture","Ecological_Compensation_Areas","Sustainable_Stratergies","Agroecological","Ecological_Cultivation","IFP","RBAPS")
 
@@ -55,7 +56,7 @@ rawlit$Primary_Management_Type<-sub("Gradient_Inputs","Intensity_Gradient",rawli
 table(c(rawlit$Primary_Management_Type,rawlit$Secondary_Management_Type,rawlit$Third_Management_Type))
 
 
-#Management Type basic bar Graph
+#Management Type basic bar graph
 
 cols <- c("Primary_Management_Type","Secondary_Management_Type","Third_Management_Type")
 
@@ -84,8 +85,8 @@ table(rawlit$Country)[order(table(rawlit$Country),decreasing = T)]
 
 table(rawlit$Country)[table(rawlit$Country)>5]
 
-#61 countries (plus category of 'multiple') and most common country is USA
-#10 studies where in Australia
+#There are 61 countries (plus category of 'multiple') and most common country is USA
+#There are 10 studies in Australia
 
 #Plotting of only countries with occurrences >5
 
@@ -103,13 +104,13 @@ table(rawlit$Continent)
 rawlit$Continent <- sapply(rawlit$Continent, factor, levels = c("Europe", "Asia","North_America","South_America","Africa","Oceania"))
 str(rawlit)
 
-pratice <- rawlit
+practice <- rawlit
 
-pratice <- pratice[,-c(1:6,9)]
+practice <- practice[,-c(1:6,9)]
 
-pratice <- pratice[,-c(pratice$Primary_Habitat)]
+practice <- practice[,-c(practice$Primary_Habitat)]
 
-pratice[,1]
+practice[,1]
 
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
@@ -127,10 +128,8 @@ text(x = -1.3,
 
 table(rawlit$Biome)
 
-#Biome Graph
+#Combining categories of biomes
 
-
-rawlit$Primary_Management_Type<-sub("Intensive_vs_Extensive","Intensively_Managed",rawlit$Primary_Management_Type)
 
 table(rawlit$Biome)
 
@@ -148,6 +147,8 @@ table(rawlit$Biome)
 
 rawlit$Biome <- sapply(rawlit$Biome, factor, levels = c("Temperate", "Tropical_Subtropical","Mediterranean","Boreal","Desert","Montane","Various","Unspecified"))
 str(rawlit)
+
+#Basic biome graph
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(10,4,1,1))
@@ -167,10 +168,12 @@ table(c(rawlit$Primary_Ecosystem_Service,rawlit$Secondary_Ecosystem_Service))
 #article with category 'various' was only article that included more than two ecosystem services
 #pollination, natural enemies, soil health and bio indicator species
 
-#below is creating a table of ecosystem services with above various added to article counts
+#below is creating a table of ecosystem services with counts that include the ones from teh article with 'various'
 
 ESdata <- matrix(data = c(134,80,45,43,35,31,10,5,5), nrow = 1, ncol = 9)
 colnames(ESdata) <- c('Pollination',"Biologicol_Control","Biodiversity_Ecosystem_Resilience","Natural Enemies","Soil","Bio_Indicators","Pests_Herbivory","Ecosystem_Engineer","Food_Source")
+
+#Basic ecosystem service graph
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8,4,1,1))
@@ -183,7 +186,6 @@ text(x = -1.9,
      adj = 1.3,
      cex = 1)
 
-?barplot
 
 #Taxon Studied ----
 
@@ -192,6 +194,8 @@ table(c(rawlit$Primary_Taxon,rawlit$Secondary_Taxon,rawlit$Third_Taxon))
 rawlit$Primary_Taxon <- sub("Mites","Acari",rawlit$Primary_Taxon)
 
 table(c(rawlit$Primary_Taxon,rawlit$Secondary_Taxon,rawlit$Third_Taxon))[order(table(c(rawlit$Primary_Taxon,rawlit$Secondary_Taxon,rawlit$Third_Taxon)),decreasing = T)]
+
+#Basic graph for the taxon studied
 
 
 dev.new(height=7,width=9,dpi=80,pointsize=14,noRStudioGD = T)
@@ -211,7 +215,7 @@ text(x = -3.9,
 
 table(rawlit$Functional_Groups)
 
-#Reducing The Number of Categories for Plotting
+#Reducing the number of categories for graphing
 
 rawlit$Secondary_Functional <- sub("Habitat_Preference","Microhabitat_Preference",rawlit$Secondary_Functional)
 rawlit[,33:35] <- sub("Service_or_Disservice","Ecosystem_Service",c(rawlit$Primary_Functional,rawlit$Secondary_Functional,rawlit$Third_Functional))
@@ -221,12 +225,14 @@ rawlit<-rawlit
 fungroup<-table(c(rawlit$Primary_Functional,rawlit$Secondary_Functional,rawlit$Third_Functional))[order(table(c(rawlit$Primary_Functional,rawlit$Secondary_Functional,rawlit$Third_Functional)),decreasing = T)]
 
 #graph which excludes categories that = 1
+
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(10,4,1,1))
 barplot(fungroup[1:17],
         las = 2, axis.lty = 1,names.arg = c('Tropic Group','Size','Diet','Social Behaviour','Nesting Style','Ecosystem Service','Hunting Style','Specialisation','Body Length','Dispersal Capacity','Feeding Style','Microhabitat','Time Active',"Yearly Generations","Pollen Collection Style",'Tongue Length','Wing Size'))
 
 #graph including all categories
+
 dev.new(height=7,width=10,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(10,4,1,1))
 barplot(fungroup,
@@ -237,7 +243,7 @@ par(mar=c(4,4,1,1))
 barplot(table(rawlit$Functional_Groups),las = 2, axis.lty = 1)
 
 
-#Plotting together - with all categories
+#Plotting a) Did article use functional group b) what functional groups (all categories)
 
 dev.new(height=7,width=10,dpi=80,pointsize=14,noRStudioGD = T)
 layout(mat = matrix(c(1,2,2,3,
@@ -256,7 +262,7 @@ mtext(text = "Number of Articles",
       side = 2,line = 2.2,cex = 0.9)
 text(labels = "(b)", x = -2, y = 55, xpd = NA,cex = 1.3)
 
-#plotting together - graph which excludes categories that = 1
+#plotting: a) Did article use functional group b) what functional groups (excludes categories that = 1)
 
 dev.new(height=7,width=10,dpi=80,pointsize=14,noRStudioGD = T)
 layout(mat = matrix(c(1,2,2,3,
@@ -275,12 +281,12 @@ mtext(text = "Number of Articles",
       side = 2,line = 2.2,cex = 0.9)
 text(labels = "(b)", x = -1, y = 55, xpd = NA,cex = 1.3)
 
-#Habitat Types in Study Areas----
+#Habitat type in study areas----
 
 table(c(rawlit$Primary_Habitat,rawlit$Secondary_Habitat))[order(table(c(rawlit$Primary_Habitat,rawlit$Secondary_Habitat)),decreasing = T)]
 head(rawlit[,18:19])
 
-#Reducing The Number of Categories for Plotting
+#Reducing the number of categories for graph
 
 replace3 <- list("Moist_Deciduous_Forest", "Conifer_Forests","Evergreen_Forest","Lowland_Dipterocarp_Forest","Moist_Montane_Forest","Premontane_Lowland_Forest",'Sclerophyllous_Forest','Tropical_Forest',"Eucalypt")
 
@@ -300,6 +306,7 @@ rawlit[,18:19] <- sub('Mallee_Woodland',"Woodland",c(rawlit$Primary_Habitat,rawl
 rawlit[,18:19] <- sub('Savannah_Woodlands',"Woodland",c(rawlit$Primary_Habitat,rawlit$Secondary_Habitat))
 rawlit[,18:19] <- sub('Open_Savannah',"Savannah",c(rawlit$Primary_Habitat,rawlit$Secondary_Habitat))
 
+#Graph of habitat in study areas
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(6,4,1,1))
@@ -312,11 +319,11 @@ text(x = -2,
      adj = 1.3,
      cex = 1)
 
-#Methods----
+#Methods used in study----
 head(rawlit[25:27])
 table(c(rawlit$Primary_Method,rawlit$Secondary_Method,rawlit$Third_Method))
 
-#Reducing The Number of Categories for Plotting
+#Reducing the number of categories for graph
 
 rawlit[,25:27] <- sub('Pan_Trap',"Pan_trap",c(rawlit$Primary_Method,rawlit$Secondary_Method,rawlit$Third_Method))
 rawlit[,25:27] <- sub('Baited_Pitfall',"Pitfall_trap",c(rawlit$Primary_Method,rawlit$Secondary_Method,rawlit$Third_Method))
@@ -333,7 +340,7 @@ rawlit[,25:27] <- sub('Soil_Monoliths',"Soil_Sample",c(rawlit$Primary_Method,raw
 rawlit[,25:27] <- sub('eDNA_Gut_Analysis',"eDNA",c(rawlit$Primary_Method,rawlit$Secondary_Method,rawlit$Third_Method))
 rawlit[,25:27] <- sub('Metabarcoding',"eDNA",c(rawlit$Primary_Method,rawlit$Secondary_Method,rawlit$Third_Method))
 
-
+#Graph of methods used in studies
 
 dev.new(height=7,width=10,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(10,4,1,1))
@@ -352,25 +359,27 @@ head(rawlit[8:9])
 
 table(c(rawlit$Primary_Farm_Type,rawlit$Secondary_Farm_Type))[order(table(c(rawlit$Primary_Farm_Type,rawlit$Secondary_Farm_Type)),decreasing = T)]
 
+#Graph of farm type
+
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8,4,1,1))
 barplot(table(c(rawlit$Primary_Farm_Type,rawlit$Secondary_Farm_Type))[order(table(c(rawlit$Primary_Farm_Type,rawlit$Secondary_Farm_Type)),decreasing = T)],las = 2, axis.lty = 1,names.arg = c('Crops','Ground Fruit \n & Vegetables','Orchid','Livestock','Agroforestry','Unspecified','Silvoarable','Silvopastoral','Various','Aquaculture'))
 mtext(text = "Number of Articles",side = 2,line = 2.5)
 
 length(table(c(rawlit$Primary_Farm_Specific,rawlit$Secondary_Farm_Specific)))
-#96 specific categories of farms - 9 different 'various' categories, and unspecified -- therefore 86 specific farm types in articles
+#There are 96 specific categories of farms types - 9 farms which are either 'various' or unspecified -- therefore 86 specific farm types total
 
 table(c(rawlit$Primary_Farm_Specific[rawlit$Primary_Farm_Specific=="Potato"],rawlit$Secondary_Farm_Specific[rawlit$Secondary_Farm_Specific=="Potato"]))
-#only one occurrence of potato fields
+#Only one occurrence of potato fields
 
-#graphing of farm specific that have over 5 instances
+#Graph of farm specific (only those which appear more than 5 times)
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(7,4,1,1))
 barplot(table(c(rawlit$Primary_Farm_Specific,rawlit$Secondary_Farm_Specific))[order(table(c(rawlit$Primary_Farm_Specific,rawlit$Secondary_Farm_Specific)),decreasing = T)][1:20],las = 2, axis.lty = 1,names.arg = c('Wheat','Cattle Grazing','Vineyard','Crops (Various)','Maize','Apple','Unspecified','Cereal','Oilseed Rape','Rice','Soybean','Palm Oil','Coffee','Cattle Dairy','Veg (Various)','Beans','Cotton','Tomato','Barely','Mango'))
 mtext(text = "Number of Articles",side = 2,line = 2.5)
 
-#together on panels
+#Graphing together on panels - a) farm type, b) farm specific
 
 dev.new(height=7,width=14,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8,4,1,1),mfrow = c(1,2))
@@ -385,7 +394,8 @@ text(x = -4.3,y = 32,labels = "(b)",xpd = NA)
 
 
 
-#Results Presented----
+#Results----
+#How/what format the results are presented in
 
 head(rawlit[28:31])
 which(colnames(rawlit)=="Primary_Result")
@@ -393,9 +403,8 @@ which(colnames(rawlit)=="Fourth_Result")
 
 table(c(rawlit$Primary_Result,rawlit$Secondary_Result,rawlit$Third_Result,rawlit$Fourth_Result))[order(table(c(rawlit$Primary_Result,rawlit$Secondary_Result,rawlit$Third_Result,rawlit$Fourth_Result)),decreasing = T)]
 
-#Spatial aggregation = 1
 
-#including in plot if more than five occurances 
+#Basic graph of results (only included if there are more than 5 occurances) 
 
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8,4,1,1))
@@ -410,8 +419,7 @@ table(rawlit$Spatial_Scale)[order(table(rawlit$Spatial_Scale),decreasing = T)]
 
 table(c(rawlit$Primary_Enviro_Variable,rawlit$Secondary_Enviro_Variable))[order(table(c(rawlit$Primary_Enviro_Variable,rawlit$Secondary_Enviro_Variable)),decreasing = T)]
 
-#Reducing The Number of Categories for Plotting
-
+#Reducing the number of categories for plotting (Environmental variables)
 rawlit[,3:4] <- sub("Water_Properties","Water",c(rawlit$Primary_Enviro_Variable,rawlit$Secondary_Enviro_Variable))
 rawlit[,3:4] <- sub("Proportion_Soil_Elements","Soil_Properties",c(rawlit$Primary_Enviro_Variable,rawlit$Secondary_Enviro_Variable))
 rawlit[,3:4] <- sub("Wooded_Landscape_Features","Trees",c(rawlit$Primary_Enviro_Variable,rawlit$Secondary_Enviro_Variable))
@@ -438,10 +446,14 @@ for (i in replace5){
 }
 head(rawlit,3);dim(rawlit)
 
+#Basic graph of the spatial scale of environmental variables
+
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8,4,1,1))
 barplot(table(rawlit$Spatial_Scale)[order(table(rawlit$Spatial_Scale),decreasing = T)],las = 2, axis.lty = 1,names.arg = c('No Environmental \n Variables','Site','Landscape','Both'))
 mtext(text = "Number of Articles",side = 2,line = 2.5)
+
+#Basic graph of the environmental variables
 
 dev.new(height=7,width=10,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(10,4,1,1))
@@ -449,7 +461,7 @@ barplot(table(c(rawlit$Primary_Enviro_Variable,rawlit$Secondary_Enviro_Variable)
 mtext(text = "Number of Articles",side = 2,line = 2.5)
 head(rawlit,3);dim(rawlit)
 
-#Graphing together
+#Graphing with both of the above graphs on panel (a) spatial scale of environmental variables b) environmental variables)
 
 dev.new(height=7,width=10,dpi=80,pointsize=14,noRStudioGD = T)
 layout(mat = matrix(c(1,2,2,3,

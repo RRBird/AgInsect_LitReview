@@ -1,8 +1,11 @@
+#This script contains the analysis for systematic literature review review
+
+
+#packages----
 
 library('dplyr')
 library("rworldmap")
 
-#Analysis for Lit review
 
 Litdata <- rawlit
 
@@ -10,7 +13,37 @@ head(Litdata,3);dim(Litdata)
 
 table(Litdata$Spatial_Scale)
 
-#TEST OF THE RANDOM SELECTION----
+#Function found online not written by me  https://www.r-bloggers.com/2013/01/randomly-deleting-duplicate-rows-from-a-dataframe/
+
+duplicated.random = function(x, incomparables = FALSE, ...) 
+{ 
+  if ( is.vector(x) ) 
+  { 
+    permutation = sample(length(x)) 
+    x.perm      = x[permutation] 
+    result.perm = duplicated(x.perm, incomparables, ...) 
+    result      = result.perm[order(permutation)] 
+    return(result) 
+  } 
+  else if ( is.matrix(x) ) 
+  { 
+    permutation = sample(nrow(x)) 
+    x.perm      = x[permutation,] 
+    result.perm = duplicated(x.perm, incomparables, ...) 
+    result      = result.perm[order(permutation)] 
+    return(result) 
+  } 
+  else 
+  { 
+    stop(paste("duplicated.random() only supports vectors", 
+               "matrices for now.")) 
+  } 
+} 
+
+#Must take only one observation from each article to fit chi squared assumptions, above function used to randomly select a single observation per article number
+
+
+#Test of random selection----
 testdata <- ESLitData
 head(testdata);dim(testdata)
 
@@ -21,26 +54,25 @@ testChi[order(testChi, decreasing = T)]
 
 
 
-#QUESTION #: Geographic----
+#QUESTION 1: Geographic----
 
 ##Continents----
 head(Litdata);dim(Litdata)
 
 geo<-Litdata
-#geo<-geo[-c(which(geo$Continent=="Multiple")),]
-#did this in explore script now, -> removed the two articles which had multiple continents
+
 head(geo,3);dim(geo)
 table(geo$Continent)
 
 Con_Chi<- table(geo$Continent)
-#Con_Chi<- Con_Chi[-which(names(Con_Chi)=='Multiple')]
 
 chisq.test(Con_Chi,p = rep(1/length(Con_Chi), length(Con_Chi)))
-#Number of studies are different in different continent
+#Result of chi: the number of studies are different across continents
 
 Conplot<-data.frame(Continent = c('Europe','Asia','North_America',"South_America","Aftica","Oceania"), Articles = as.numeric(Con_Chi), Lat = c(54.919722,46.587472,50.301389,-19.624639,1.600889,-38.414056), Long = c(18.305611,94.334389,-109.222306,-58.773083,23.844111,160.639861))
 
 ##Table of Countries ----
+#For supporting information
 table(geo$Country)[order(table(geo$Country),decreasing = T)]
 
 write.table(table(geo$Country)[order(table(geo$Country),decreasing = T)], file = '3. Results/Countries.txt', col.names = TRUE,
@@ -59,9 +91,9 @@ Bio_Chi<- table(Biome$Biome)
 Bio_Chi[order(Bio_Chi, decreasing = T)]
 
 chisq.test(Bio_Chi,p = rep(1/length(Bio_Chi), length(Bio_Chi)))
-#Number of studies are different in different Biomes 
+#Result of chi: the number of studies are different across Biomes 
 
-##Figure----
+##Geographic figure----
 str(countriesCoarseLessIslands)
 
 dev.new(height=17,width=14,dpi=80,pointsize=14,noRStudioGD = T)
@@ -94,7 +126,7 @@ plot.new()
 plot.new()
 
 
-#Question #: Spatial----
+#Question 2: Spatial----
 
 ##Spatial Scale----
 
@@ -107,9 +139,9 @@ Spat_Chi[order(Spat_Chi, decreasing = T)]
 
 
 chisq.test(Spat_Chi,p = rep(1/length(Spat_Chi), length(Spat_Chi)))
-#number of studies which use the various spatial scales is different 
+#Result of chi: the number of studies are different across spatial scales 
 
-##Figure----
+##Spatial figure----
 
 dev.new(height=4.5,width=3.5,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1))
@@ -120,7 +152,7 @@ mtext(text = 'df = 3',adj = 1,at = 4.8,line = -1,cex = 0.9)
 mtext(as.expression(bquote(chi^2~"= 53.39")),adj = 1,at = 4.8,line = -2,cex = 0.9)
 mtext(text = expression(italic('p')< 0.001),adj = 1,at = 4.8,line = -2.7,cex = 0.9)
 
-#Question #: Farm----
+#Question 3: Farm----
 
 ##Farm Management----
 
@@ -142,47 +174,16 @@ ManLitData <- rbind(ManLitData1,ManLitData2,ManLitData3)
 head(ManLitData);dim(ManLitData)
 
 table(ManLitData$Management)
-ManLitData$Management <- sub('Intensively_Managed',"Conventional",ManLitData$Management)
+ManLitData$Management <- sub('Intensively_Managed',"Conventional",ManLitData$Management) #Combining management categories that got missed in exploratory script
 table(ManLitData$Management)
 
-
-
-#Function found online not written by me  https://www.r-bloggers.com/2013/01/randomly-deleting-duplicate-rows-from-a-dataframe/
-
-duplicated.random = function(x, incomparables = FALSE, ...) 
-{ 
-  if ( is.vector(x) ) 
-  { 
-    permutation = sample(length(x)) 
-    x.perm      = x[permutation] 
-    result.perm = duplicated(x.perm, incomparables, ...) 
-    result      = result.perm[order(permutation)] 
-    return(result) 
-  } 
-  else if ( is.matrix(x) ) 
-  { 
-    permutation = sample(nrow(x)) 
-    x.perm      = x[permutation,] 
-    result.perm = duplicated(x.perm, incomparables, ...) 
-    result      = result.perm[order(permutation)] 
-    return(result) 
-  } 
-  else 
-  { 
-    stop(paste("duplicated.random() only supports vectors", 
-               "matrices for now.")) 
-  } 
-} 
-
-#Must take only one observation from each article to fit chi squared assumptions, above function used to randomly select a single observation per article number
-
+#Selecting only one management to include for each paper
 
 ManLitData$Selected <- duplicated.random(ManLitData$Article_Number)
 head(ManLitData);dim(ManLitData)
-#FALSE records are taken as the record for each article
+#FALSE is taken as the record for each article
 
 dim(ManLitData[which(ManLitData$Selected == "FALSE"),])
-
 
 Man_Chi <- ManLitData[which(ManLitData$Selected == "FALSE"),]
 
@@ -191,9 +192,8 @@ length(unique(Man_Chi$Article_Number))
 Man_Chi1<- table(Man_Chi$Management)
 Man_Chi1[order(Man_Chi1, decreasing = T)]
 
-
 chisq.test(Man_Chi1,p = rep(1/length(Man_Chi1), length(Man_Chi1)))
-#the number of studies which use different management types is different 
+#Result of chi: the number of studies are different across management types 
 
 
 ##Farm Type----
@@ -221,7 +221,7 @@ table(FarmLitData$Type)
 
 FarmLitData$Selected <- duplicated.random(FarmLitData$Article_Number)
 head(FarmLitData);dim(FarmLitData)
-#FALSE records are taken as the record for each article
+#FALSE is taken as the record for each article
 
 dim(FarmLitData[which(FarmLitData$Selected == "FALSE"),])
 dim(Litdata)
@@ -236,7 +236,7 @@ Farm_Chi1[order(Farm_Chi1, decreasing = T)]
 chisq.test(Farm_Chi1,p = rep(1/length(Farm_Chi1), length(Farm_Chi1)))
 
 
-##Figure----
+##Farm figure----
 
 dev.new(height=4.5,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(9,4,1,1),mfrow = c(1,2))
@@ -259,7 +259,7 @@ mtext(text = expression(italic('p')< 0.001),adj = 1,at = 8.5,line = -2.6,cex = 0
 mtext(text = 'b)',adj = 1,at = -2.4,line = 0,cex = 0.95)
 
 
-#Question #: Insect Focus ----
+#Question 4: Invertebrate ----
 
 
 ##Ecosystem Service----
@@ -278,7 +278,7 @@ head(ESLitData);dim(ESLitData)
 
 ESLitData$Selected <- duplicated.random(ESLitData$Article_Number)
 head(ESLitData);dim(ESLitData)
-#FALSE records are taken as the record for each article
+#FALSE is taken as the record for each article
 
 dim(ESLitData[which(ESLitData$Selected == "FALSE"),])
 dim(Litdata)
@@ -299,8 +299,9 @@ ES_Chi1[order(ES_Chi1, decreasing = T)]
 
 
 chisq.test(ES_Chi1,p = rep(1/length(ES_Chi1), length(ES_Chi1)))
+#Result of chi: the number of studies are different across ecosystem services
 
-
+#Graph of ecosystem service
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8.5,4,1,1))
 plot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,150),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
@@ -310,9 +311,9 @@ mtext(as.expression(bquote(chi^2~"= 277.78")),adj = 1,at = 7.65,line = -5)
 mtext(text = 'p < 0.001',adj = 1,at = 7.4,line = -6.6)
 
 
-##Taxon----
+##Taxon/functional----
+#Did they use functional or taxon as their focus?
 
-#did they use functional or phylum 
 TaxLitData1 <- data.frame(Article_Number = Litdata$Article_Number, Taxon = Litdata$Primary_Taxon)
 TaxLitData2 <- data.frame(Article_Number = Litdata$Article_Number,Taxon = Litdata$Secondary_Taxon)
 TaxLitData3 <- data.frame(Article_Number = Litdata$Article_Number,Taxon = Litdata$Third_Taxon)
@@ -340,7 +341,8 @@ dim(Litdata)
 
 
 Tax_Chi <- TaxLitData[which(TaxLitData$Selected == "FALSE"),]
-#FALSE records are taken as the record for each article
+#FALSE is taken as the record for each article
+
 table(TaxLitData$Taxon)
 
 TaxLitData$Taxon <- sub('Neuroptera','Other',TaxLitData$Taxon)
@@ -364,38 +366,39 @@ TaxLitData$Taxon <- sub('Apocrita','Hymenoptera',TaxLitData$Taxon)
 table(TaxLitData$Taxon)
 
 Tax_Chi <- TaxLitData[which(TaxLitData$Selected == "FALSE"),]
-#FALSE records are taken as the record for each article
+#FALSE is taken as the record for each article
 
-#Phylo vs Functional area
 
 Tax_Chi1 <- table(Tax_Chi$Type)
 Tax_Chi1[order(Tax_Chi1, decreasing = T)]
 
 
 chisq.test(Tax_Chi1,p = rep(1/length(Tax_Chi1), length(Tax_Chi1)))
+#Result of chi: the number of studies are different for taxon vs functional
 
 head(Tax_Chi,4);dim(Tax_Chi)
 
-#PHylo
+###Taxon (Phylo)----
 
 TaxPHY_Chi<- table(Tax_Chi$Taxon[Tax_Chi$Type == 'Phylo'])
 chisq.test(TaxPHY_Chi,p = rep(1/length(TaxPHY_Chi), length(TaxPHY_Chi)))
-
+#Result of chi: the number of studies are different across taxa
 
 TaxPHY_Chi[order(TaxPHY_Chi,decreasing = T)]
 
-#Functional group
+###Functional group---
 
 TaxFUN_Chi<- table(Tax_Chi$Taxon[Tax_Chi$Type == 'FunArea'])
 #remove water which is less than 5
 
 TaxFUN_Chi <- TaxFUN_Chi[-which(names(TaxFUN_Chi)=='Water_Community')]
 chisq.test(TaxFUN_Chi,p = rep(1/length(TaxFUN_Chi), length(TaxFUN_Chi)))
+#Result of chi: the number of studies are different across functional groups
 
 TaxFUN_Chi[order(TaxFUN_Chi, decreasing = T)]
 
 
-##Figure----
+##Invertebrate figure----
 
 FUN_tab <- table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"])[order(table(TaxLitData$Taxon[TaxLitData$Type == "FunArea"]),decreasing = T)]
 FUN_tab[-5]
@@ -438,7 +441,4 @@ mtext(text = 'df = 3',adj = 1,at = 5,line = 0.1,cex=0.9)
 mtext(as.expression(bquote(chi^2~"= 14.68")),adj = 1,at = 5,line = -1,cex = 0.9)
 mtext(text = expression(italic('p') == 0.002),adj = 1,at = 5,line = -1.7,cex=0.9)
 mtext(text = 'd)',at = -1.6,line = -0.1,cex =0.95)
-
-
-
 
