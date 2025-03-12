@@ -52,6 +52,8 @@ testChi <- testdata[which(testdata$Selected == "FALSE"),]
 testChi<- table(testChi$ES)
 testChi[order(testChi, decreasing = T)]
 
+head(testdata);dim(testdata)
+tail(testdata);dim(testdata)
 
 
 #QUESTION 1: Geographic----
@@ -305,7 +307,7 @@ chisq.test(ES_Chi1,p = rep(1/length(ES_Chi1), length(ES_Chi1)))
 dev.new(height=7,width=7,dpi=80,pointsize=14,noRStudioGD = T)
 par(mar=c(8.5,4,1,1))
 plot(table(ESLitData$ES)[order(table(ESLitData$ES),decreasing = T)], ylim = c(0,150),ylab = "Number of Articles",type = "p",las = 2, cex = 2,pch = 19, xaxt="n")
-axis(side=1,at=1:10,las = 2,labels = c('Pollination',"Biologicol Control","Biodiversity/\nResilience","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem \nEngineer","Other"))
+axis(side=1,at=1:10,las = 2,labels = c('Pollination',"Biologicol Control","Biodiversity/\nResilience","Natural Enemies","Soil","Bioindicators","Pests/Herbivory","Ecosystem \nEngineer","Other"))
 mtext(text = 'df = 8',adj = 1,at = 6.9,line = -5.8)
 mtext(as.expression(bquote(chi^2~"= 277.78")),adj = 1,at = 7.65,line = -5)
 mtext(text = 'p < 0.001',adj = 1,at = 7.4,line = -6.6)
@@ -386,7 +388,7 @@ chisq.test(TaxPHY_Chi,p = rep(1/length(TaxPHY_Chi), length(TaxPHY_Chi)))
 
 TaxPHY_Chi[order(TaxPHY_Chi,decreasing = T)]
 
-###Functional group---
+###Functional group----
 
 TaxFUN_Chi<- table(Tax_Chi$Taxon[Tax_Chi$Type == 'FunArea'])
 #remove water which is less than 5
@@ -407,7 +409,7 @@ FUN_tab <- FUN_tab[-5]
 dev.new(height=17,width=14,dpi=80,pointsize=14,noRStudioGD = T)
 par(mfrow = c(2,2))
 par(mar = c(9,4,1,1))
-barplot(ES_Chi1[order(ES_Chi1, decreasing = T)], ylim = c(0,140),las = 2,names.arg = c('Pollination',"Biologicol Control","Biodiversity","Natural Enemies","Soil","Bio Indicators","Pests/Herbivory","Ecosystem Engineer","Other"))
+barplot(ES_Chi1[order(ES_Chi1, decreasing = T)], ylim = c(0,140),las = 2,names.arg = c('Pollination',"Biologicol Control","Biodiversity","Natural Enemies","Soil","Bioindicators","Pests/Herbivory","Ecosystem Engineer","Other"))
 box(bty='l')
 mtext(text = "No. of Papers",side = 2, line = 2.8, cex =1,at = 60)
 mtext(text = 'df = 8',adj = 1,at = 11,line = -0.6,cex=0.9)
