@@ -14,7 +14,7 @@ library("grid")
 getwd()
 
 
-rawlit <- read.csv("1. Data/Data_From_Papers.csv")
+rawlit <- read.csv("1. Data/Data_Extracted_From_Papers.csv")
 
 data <- rawlit
 
